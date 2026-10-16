@@ -1693,10 +1693,15 @@
                 }
             }
 
-            if (this.statRank) this.statRank.innerText = `#${stats.rank} / ${stats.totalPlayers}`;
+            let displayRank = stats.rank;
+            let displayTotal = Math.max(1, stats.totalPlayers || 1);
+            if (!stats.isVictory && displayRank === 1 && displayTotal > 1) {
+                displayRank = 2;
+            }
+            if (this.statRank) this.statRank.innerText = `#${displayRank} / ${displayTotal}`;
             if (this.statKills) this.statKills.innerText = `${stats.kills}`;
 
-            const totalSec = Math.floor(stats.survivalTime);
+            const totalSec = Math.max(0, Math.floor(stats.survivalTime || 0));
             const mins = String(Math.floor(totalSec / 60)).padStart(2, '0');
             const secs = String(totalSec % 60).padStart(2, '0');
             if (this.statTime) this.statTime.innerText = `${mins}:${secs}`;

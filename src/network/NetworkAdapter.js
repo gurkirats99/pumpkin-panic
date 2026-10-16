@@ -258,24 +258,38 @@
         }
 
         getConnectedHumanPlayers() {
-            if (!this.room || !this.room.state || !this.room.state.players) return [];
             const list = [];
             let firstHumanSessionId = null;
 
-            this.room.state.players.forEach((player, sessionId) => {
-                if (!player.isBot) {
-                    if (!firstHumanSessionId) firstHumanSessionId = sessionId;
-                    list.push({
-                        sessionId: sessionId,
-                        name: player.name || 'Pumpkin',
-                        skin: player.skin || 'classic',
-                        gun: player.gun || 'SEED_PISTOL',
-                        isSelf: (sessionId === this.room.sessionId),
-                        isHost: (this.isRoomCreator ? sessionId === this.room.sessionId : sessionId === firstHumanSessionId),
-                        ping: Math.floor(18 + Math.random() * 12)
-                    });
-                }
-            });
+            if (this.room && this.room.state && this.room.state.players) {
+                this.room.state.players.forEach((player, sessionId) => {
+                    if (!player.isBot) {
+                        if (!firstHumanSessionId) firstHumanSessionId = sessionId;
+                        list.push({
+                            sessionId: sessionId,
+                            name: player.name || 'Pumpkin',
+                            skin: player.skin || 'classic',
+                            gun: player.gun || 'SEED_PISTOL',
+                            isSelf: (sessionId === this.room.sessionId),
+                            isHost: (this.isRoomCreator ? sessionId === this.room.sessionId : sessionId === firstHumanSessionId),
+                            ping: Math.floor(18 + Math.random() * 12)
+                        });
+                    }
+                });
+            }
+
+            // Fallback: If player map is still synchronizing or empty, include self as host
+            if (list.length === 0 && this.room && this.room.sessionId) {
+                list.push({
+                    sessionId: this.room.sessionId,
+                    name: (this.scene && this.scene.playerData && this.scene.playerData.name) || 'SpookyPumpkin',
+                    skin: (this.scene && this.scene.playerData && this.scene.playerData.skin) || 'classic',
+                    gun: (this.scene && this.scene.playerData && this.scene.playerData.gun) || 'SEED_PISTOL',
+                    isSelf: true,
+                    isHost: true,
+                    ping: 24
+                });
+            }
 
             return list;
         }
@@ -291,9 +305,9 @@
 
         isHost() {
             const humans = this.getConnectedHumanPlayers();
-            if (humans.length === 0) return false;
+            if (humans.length <= 1) return true; // If you are the only human, you are the host!
             const self = humans.find(h => h.isSelf);
-            return self ? !!self.isHost : false;
+            return self ? !!self.isHost : true;
         }
 
         setupRoomListeners() {

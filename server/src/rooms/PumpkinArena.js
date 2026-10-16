@@ -75,8 +75,14 @@ class PumpkinArenaRoom extends Room {
         player.gun = options.gun || "SEED_PISTOL";
         player.isBot = false;
 
-        // If room match was over or storm was fully shrunk, start a fresh match
-        if (this.state.matchOver || this.state.storm.currentRadius < 350) {
+        // Count existing human players before this join
+        let existingHumans = 0;
+        this.state.players.forEach(p => {
+            if (!p.isBot) existingHumans++;
+        });
+
+        // If this is the only human joining, or if match was over, or storm was shrunk: start fresh match!
+        if (existingHumans === 0 || this.state.matchOver || this.state.storm.currentRadius < 1100) {
             this.resetMatch();
         }
 
@@ -864,7 +870,12 @@ class PumpkinArenaRoom extends Room {
             p.invulnUntil = Date.now() + 1500; // Brief spawn shield
         });
 
-        // Refresh server-side bots
+        // Refresh server-side bots without leaving dead bots in state
+        const toDelete = [];
+        this.state.players.forEach((p, id) => {
+            if (p.isBot) toDelete.push(id);
+        });
+        toDelete.forEach(id => this.state.players.delete(id));
         this.bots = [];
         this.balanceBots();
     }

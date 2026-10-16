@@ -326,16 +326,30 @@
             }).then(result => {
                 this.roomCode = result.roomCode;
                 console.log(`[Multiplayer] Successfully connected to room: ${result.roomCode}`);
-                this.isLobbyActive = true;
-                this.matchActive = true;
 
-                if (window.PumpkinPanic.ui) {
-                    window.PumpkinPanic.ui.setRoomCodeBadge(this.roomCode);
-                    window.PumpkinPanic.ui.openLobby({
-                        roomCode: this.roomCode,
-                        networkAdapter: this.networkAdapter,
-                        gameScene: this
-                    });
+                const isQuick = (options.multiplayerMode === 'quick');
+                if (isQuick) {
+                    // Quick Play: Skip waiting lobby and spawn straight into the arena!
+                    this.isLobbyActive = false;
+                    this.matchActive = true;
+                    if (window.PumpkinPanic.ui) {
+                        window.PumpkinPanic.ui.setRoomCodeBadge(this.roomCode);
+                        window.PumpkinPanic.ui.onMatchStarted(this);
+                    }
+                    this.onLobbyMatchLaunched();
+                } else {
+                    // Custom private room: Open lobby for inviting friends
+                    this.isLobbyActive = true;
+                    this.matchActive = true;
+
+                    if (window.PumpkinPanic.ui) {
+                        window.PumpkinPanic.ui.setRoomCodeBadge(this.roomCode);
+                        window.PumpkinPanic.ui.openLobby({
+                            roomCode: this.roomCode,
+                            networkAdapter: this.networkAdapter,
+                            gameScene: this
+                        });
+                    }
                 }
             }).catch(err => {
                 console.error("[Multiplayer] Connection failed:", err);
@@ -353,7 +367,7 @@
         onLobbyMatchLaunched() {
             this.isLobbyActive = false;
             this.matchActive = true;
-            this.matchStartTime = Date.now();
+            this.matchStartTime = (this.time && typeof this.time.now === 'number') ? this.time.now : performance.now();
             if (this.player && this.cameras && this.cameras.main) {
                 this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
                 this.cameras.main.setZoom(1.0);
@@ -428,13 +442,26 @@
                 state.players.forEach((p, sId) => {
                     if (this.networkAdapter && sId === this.networkAdapter.sessionId) {
                         // Local Player sync
-                        if (this.player && !this.player.isDead) {
+                        if (this.player) {
+                            if (this.player.isDead && !p.isDead) {
+                                this.player.isDead = false;
+                                this.player.enableBody(true, p.x, p.y, true, true);
+                                this.player.setAlpha(1);
+                            }
                             this.player.health = p.health;
                             this.player.maxHealth = p.maxHealth;
                             this.player.level = p.level;
                             this.player.kills = p.kills;
                             this.player.score = p.score;
                             this.player.updateHealthBar();
+
+                            // Reconcile position if severely drifted (e.g. initial spawn)
+                            const dist = Math.hypot(this.player.x - p.x, this.player.y - p.y);
+                            if (dist > 350) {
+                                this.player.x = p.x;
+                                this.player.y = p.y;
+                            }
+
                             if (p.isDead && !this.player.isDead) {
                                 this.player.die(null);
                             }
@@ -553,6 +580,16 @@
             this.networkAdapter.on('onMatchEnded', (data) => {
                 const isVictory = (this.player && !this.player.isDead && (data.winnerId === this.player.id || data.winnerName === this.player.name));
                 this.triggerGameOver(isVictory, null);
+            });
+
+            // Match started by host broadcast (for guest clients)
+            this.networkAdapter.on('onMatchStartedByHost', () => {
+                console.log("[Multiplayer] Host launched the match!");
+                if (window.PumpkinPanic.ui) {
+                    window.PumpkinPanic.ui.launchMatchFromLobby();
+                } else {
+                    this.onLobbyMatchLaunched();
+                }
             });
 
             // Connection Error / Room Leave
@@ -806,7 +843,8 @@
         triggerGameOver(isVictory, killedByName) {
             if (this.matchOver) return;
             this.matchOver = true;
-            this.matchDuration = (this.time.now - this.matchStartTime) / 1000;
+            const now = (this.time && typeof this.time.now === 'number') ? this.time.now : performance.now();
+            this.matchDuration = Math.max(1, (now - (this.matchStartTime || now)) / 1000);
 
             // Signal CrazyGames lifecycle events
             if (window.PumpkinPanic.CrazyGames) {
@@ -823,13 +861,23 @@
             // Camera slow zoom on player/winner
             this.cameras.main.zoomTo(1.15, 1200, 'Cubic.easeOut');
 
+            // Determine accurate player count and rank
+            const totalInGame = this.isMultiplayer
+                ? Math.max(1, 1 + (this.remoteEntities ? this.remoteEntities.size : 0))
+                : (1 + (this.bots ? this.bots.length : 0));
+
+            let rank = isVictory ? 1 : (this.leaderboardSystem ? this.leaderboardSystem.playerRank : 1);
+            if (!isVictory && rank === 1 && totalInGame > 1) {
+                rank = 2;
+            }
+
             // Dispatch match end to UIManager with killer attribution
             if (window.PumpkinPanic.ui) {
                 window.PumpkinPanic.ui.showEndScreen({
                     isVictory: isVictory,
                     killedByName: killedByName || 'Unknown Threat',
-                    rank: isVictory ? 1 : this.leaderboardSystem.playerRank,
-                    totalPlayers: 1 + this.bots.length,
+                    rank: rank,
+                    totalPlayers: totalInGame,
                     kills: this.player ? this.player.kills : 0,
                     level: this.player ? this.player.level : 1,
                     xp: this.player ? this.player.xp : 0,

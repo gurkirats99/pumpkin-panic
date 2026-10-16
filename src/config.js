@@ -17,29 +17,16 @@
             GRASS_TUFT_COUNT: 280
         },
 
-        // Online Multiplayer Settings
+        // Online Multiplayer Settings (Permanently connected to official cloud server)
         MULTIPLAYER: {
-            DEFAULT_SERVER_URL: 'ws://localhost:2567',
+            DEFAULT_SERVER_URL: 'wss://pumpkin-panic-server.onrender.com',
             STORAGE_KEY: 'pumpkin_server_url',
             ROOM_NAME: 'pumpkin_arena',
-            HEALTH_TIMEOUT_MS: 3000,
+            HEALTH_TIMEOUT_MS: 5000,
             INTERPOLATION_LERP: 0.24,
             getServerUrl: function() {
-                try {
-                    const params = new URLSearchParams(window.location.search);
-                    const queryServer = params.get('server');
-                    if (queryServer) return queryServer;
-
-                    const stored = localStorage.getItem('pumpkin_server_url');
-                    if (stored && stored.trim()) return stored.trim();
-
-                    if (window.location.hostname && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' && window.location.protocol.startsWith('http')) {
-                        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-                        return `${protocol}//${window.location.hostname}:2567`;
-                    }
-                } catch (e) {}
-
-                return 'ws://localhost:2567';
+                // Permanently locked to the official production server
+                return 'wss://pumpkin-panic-server.onrender.com';
             }
         },
 
