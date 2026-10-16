@@ -1,0 +1,2445 @@
+Introduction
+Welcome to the documentation page for publishing a web game on CrazyGames. This page covers our game requirements and SDK documentation, while introducing you various resources and guidance to launch successful web-games. By publishing your game on CrazyGames, you can expect these benefits:
+
+🎮 Your games available on desktop and mobile devices
+👥 Reach millions of gamers, many of them registered
+🤑 Earn revenue with ads (and in-game purchases for selected games only)
+💾 Save game progress in the cloud easily
+🎯 Engage gamers with in-game friend invites
+📈 Get statistics and feedback for your games
+🤝 Join an ever-growing community of passionate developers
+
+Launching on CrazyGames
+All game submissions are carefully reviewed by our QA team according to our technical and quality requirements. Please take the time to read our requirements section to ensure your game submission is accepted.
+
+Games follow a two-stage launch process: Basic Launch and Full Launch. The goal of this process is to shorten the initial launch timeline and evaluate real-world performance before proceeding to a global release. You can learn more about how we select games for launch on our FAQ page. For tips about launching your game in Basic Launch, see the Basic Launch Guide.
+
+The phases are described below:
+
+Basic Launch
+Basic Implementation	Full Launch
+Full Implementation
+Test your game on our platform with a limited audience for a temporary period of 7 to 21 days.
+Requires Basic Implementation; no CrazyGames-specific integration and only Basic QA review.
+Monetization (video ads, banners, in-game purchases) is disabled.
+Proceed to Full Launch if metrics are good.
+Your game is selected for global release.
+Requires Full Implementation of CrazyGames requirements, including a Full QA review.
+Monetization is enabled and you start receiving revenue share.
+During integration, the Basic version remains available to its initial limited audience.
+Check our requirements section for detailed requirements for each phase. Our QA tool will guide you through the submission and review process step by step.
+
+Progression to the Full Launch stage is based on key engagement metrics - average playtime, conversion to gameplay, and retention. These metrics will be benchmarked against other games on the platform. During the Basic Launch stage, you'll have the opportunity to monitor performance and gather user feedback.
+
+The Basic Launch period ends once your game has been live for at least 7 days and has reached at least 500 plays. Both thresholds must be met, so a game that reaches 500 plays sooner still runs for the full 7 days. If your game hasn't reached 500 plays by then, the period ends automatically after 21 days. At the end of the period, you’ll be notified about the next steps:
+
+If all metrics meet or exceed benchmarks, you are invited to update your game. After implementing Full Implementation requirements, you can then submit the new version for Full Launch.
+If some metrics meet benchmarks, you may be invited to improve your game and request another Basic Launch period.
+If most metrics fall below benchmarks, your game unfortunately can’t proceed to Full Launch. If you wish to submit it again, you need to submit as a new game including significant improvements.
+In some cases, such as multiplayer titles that require a larger audience or games already published elsewhere and specifically invited by our team, you may bypass the Basic Launch and proceed directly to the Full Launch.
+
+SDK
+Our SDK bridges the gap between your web game and CrazyGames. Furthermore:
+
+It is easy to integrate, with simple one-time integration
+You can earn revenue through user-friendly ads
+Your game integrates perfectly with our platform
+The documentation is simple to follow
+To start using the SDK pick the one corresponding to the technology you are using. If your technology isn't explicitly listed, you can usually manage at least basic integration through the HTML5 version. Most game engines that support WebGL also have a way of interacting with JavaScript when running in browser.
+
+Make sure to check about our requirements before you start integrating the SDK.
+
+You can integrate our SDK with any common game development framework. We currently have games live developed with Unity, Defold, Godot, Phaser, PlayCanvas, Construct, Pixi.js, BabylonJS, and many other frameworks.
+
+HTML5	Unity	GameMaker	Construct3	Godot
+HTML5	Unity	GameMaker	Construct3	Godot
+Cocos	GDevelop	Defold	Wonderland		
+Cocos	GDevelop ↗	Defold ↗	Wonderland ↗		
+Testing your game
+To preview your game on CrazyGames before submitting, you can use our Preview tool to test how your game will look on CrazyGames. You can easily reach it via Submit a game and test different versions before actually submitting.
+
+Partners
+The Partners page gives an overview of our beloved partners.
+
+Photon	Xsolla	ByteBrew	Lasso
+Photon Backend	Xsolla Payments	ByteBrew Analytics	Lasso Moderation
+Others
+In our Resources section, you can find more information about various topics like mouse lock and download size optimizations.
+
+Lastly we offer an extensive FAQ for various questions and to reach out.
+
+Requirements
+To be published on CrazyGames, your game must meet our requirements. We designed these standards to ensure all games on our platform are fun, unique, visually appealing, and properly integrated.
+
+Our launch process consists of 2 steps. Read more about the principles on the introduction page.
+
+A game in Basic Launch allows you to go live without needing to customize your game for CrazyGames. The CrazyGames SDK is optional and monetization is not available. Review the Basic Launch Guide to understand how progression is evaluated.
+Once your game has been selected for Full Launch, you are required to comply to all integration requirements listed below, including the CrazyGames SDK.
+The table below provides a summary of the key requirements. Each category has a dedicated page with detailed descriptions:
+
+Category	Basic Implementation
+Basic Implementation	Full Implementation*
+Full Implementation
+Technical	
+Initial download size ≤ 50MB
+Total file size ≤ 250MB (50MB without SDK)
+File count ≤ 1500
+SDK & GameplayStart event
+Gameplay	
+Basic visual QA checks
+Adhere to PEGI12
+Full visual QA check
+Land directly in gameplay
+Advertisement	
+CrazyGames monetization is disabled
+No external ads
+Ads through SDK, following our guidelines
+Works with AdBlock
+Account integration
+Only when applicable	
+No external login options
+Progress is linked to CrazyGames Account
+Use CrazyGames username & avatar
+Automatic login for CrazyGames users
+Multiplayer
+Only when applicable	Full implementation features might increase engagement and are optional in basic launch	
+User room info
+Invite link (if applicable)
+Instant multiplayer flow
+Keep rooms across rounds
+DisableChat preference
+In-game Purchases
+Invite Only	Not available	
+Use CrazyGames Xsolla account and userId
+* A full implementation should implement the basic implementation requirements as well.
+
+Our HTML5 and Unity SDKs support all the scenarios. Other SDKs might miss certain functionalities.
+
+As part of the submission process, you will also need to provide qualitative metadata (game description and controls) and Game covers (images and videos).
+
+Guidelines & resources
+Additionally we offer some Quality Guidelines to optimize your game for success on the CrazyGames platform. These are optional but based on our insights in our audience and web gaming. Guidelines are marked with Guideline throughout the documentation.
+
+Lastly have a look at the Resources provided on this site for additional tips to publish a succesful web game.
+
+Monetization
+The primary monetization mechanism we offer is through advertisement revenue share. Only ads served through our SDK are allowed, refer to our Advertisement requirements.
+
+Selected games are eligible for In-game Purchases. A Full Implementation is required, using Xsolla as payments provider. Contact our team if you want to apply for this.
+
+Insights & Analytics
+Once your game has been published, you'll be able to monitor key game metrics on your Developer Dashboard. These are some of the metrics we provide by default:
+
+Players
+Average playtime
+Gameplay conversion
+Retention
+Revenue
+To further optimize your game and access advanced analytics — including level progression, drop-off points, and user journey tracking — we recommend utilizing ByteBrew. This powerful, free analytics tool is simple to integrate, enabling you to enhance player engagement and boost the visibility of your game on the Crazy Games Portal.
+
+Warning
+
+In case your game collects additional personal data beyond the events in our SDK, the game should add a Terms & Conditions and/or Privacy Policy notice to new players. Check the User Consent section for details.
+
+Technical support for SDK integration
+Once your games reach 50k plays (combined), we can offer you technical support with SDK integration. This threshold allows us to give each developer individual feedback on ad placements and integration.
+
+Quality Assurance Tool
+On our Developer Portal you'll be able to preview your game. It allows you to:
+
+Run your game as it would on CrazyGames
+Check if your game meets our requirements
+Test all the SDK features that you implemented and get feedback about it
+Made with Material for MkDocs
+
+Technical requirements
+You must follow these technical requirements to get your game published on CrazyGames. We selected these to ensure a fluid user experience when using the platform based on our experience with succesful web games.
+
+File Size & Count Limits
+A key factor of a web game's success is the time it takes for a user to start playing. This is why we enforce strict file size limits.
+
+Basic Implementation A maximum total file size of 250MB is allowed. There's a file count limit on 1500 files as high file counts will make loading slower.
+Basic Implementation The game must have an initial download size ≤ 50MB. In order to be eligible for the mobile homepage, the initial download size needs to be ≤ 20MB.
+When the SDK is integrated (optional for basic implementation, mandatory for full implementation), the initial download size is measured between the start of loading and the occurence of the first Gameplay start event triggered through the Game module. This event should be triggered when the user enters in a playable state, so excludes menus and additional loading steps.
+In case the SDK is not integrated, total file size is used and thus should be ≤ 50MB (20MB to be eligible for the mobile home page).
+For externally hosted/loaded files our QA team will evaluate based on the time it takes to reach gameplay (≤ 20 seconds).
+Use only relative paths when referring to other files in the game bundle. Never use absolute paths, as they will fail to load (see here for additional information).
+Refer to our Resources section and specifically to our Unity custom build feature for optimization guidelines.
+
+Device & browser compatibility
+Basic Implementation
+
+We expect games to work on Chrome and Edge. Games that don't work well on Safari will be disabled on that browser.
+A significant segment of the CrazyGames audience uses Chromebook. Games will be disabled on Chromium OS if they do not work smoothly on a 4GB RAM device.
+Game supports mouse, keyboard, and touch if mobile is supported.
+Game should be playable in landscape mode on desktop. We allow vertical/portrait games to be published, especially if they are mobile friendly, either with displaying black bars or background images around on the sides.
+CrazyGames has advanced device detection capabilities to distinguish desktop/mobile/tablet, OS browser and application type. We strongly recommend to rely on our system info to implement a device-specific experience.
+Mobile game requirements
+In order to be eligible for the mobile homepage, the initial download size can not exceed 20MB.
+You can configure supported orientation in your submission. The website will make sure your game can be played only in those orientations, by asking the users to rotate their devices. Thus, you don't need to implement any orientation lock logic.
+When playing on some devices like tablets for example, double tapping, or pressing and holding can show the magnification tool, or it can select the entire game and show a contextual menu. To prevent frustration, this CSS should be added to the body of your game:
+
+-webkit-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+Unity games will be disabled on iOS by default due to frequent crashes (caused by memory shortage). Once your game reaches sufficient plays our team will evaluate the game on iOS and consider enabling it.
+
+Mobile games should work well inside the CrazyGames App, where games open in fullscreen and can be affected by device safe areas. See the Safe are padding page for more details and examples.
+We manage Unity graphics quality (Device Pixel Ratio) to ensure good game performance for users:
+For iOS devices and low memory Android devices, we choose DPR value of 1 because these devices crash with higher natively supported DPR
+For other devices the native DPR supported by the device is used (window.devicePixelRatio)
+We can overwrite this configuration manually if we think an exception is needed
+Resuming audio after iOS interrupts it
+Problem
+Android keeps the AudioContext in a running state when a user moves to a different app (while still silencing the audio).
+
+On iOS, the AudioContext enters an interrupted state when the app is backgrounded or interrupted by system events like phone calls. iOS therefore requires a proactive approach to restore sound once the user returns.
+
+Some game engines / audio libraries handle this automatically for the developer like Unity. We did notice issues in games using Howler and PlayCanvas.
+
+Solution
+The context often transitions to suspended when the app is foregrounded. To revive the audio, developers must call the resume() method within a valid user-initiated gesture, such as a touchend or click event. Simply listening for a visibility change is insufficient, as WebKit restricts audio playback until a direct interaction occurs.
+
+document.addEventListener("touchend", () => {
+    if (audioContext && audioContext.state === "suspended") {
+        audioContext.resume();
+    }
+});
+The AudioContext is created by the developer’s game (or library). For example when using Howler it will be at Howler.ctx, in PlayCanvas it’s at pc.app.soundManager.context.
+
+SDK Integration
+The CrazyGames SDK
+
+For the best user experience and to be able to tap into all value of the CrazyGames platform, integrating the SDK is important. Refer to the appropriate game engine in the side menu.
+
+Basic SDK Integration
+Basic Implementation
+
+If you decide to integrate the SDK for a Basic Launch, we require the following:
+
+A Gameplay start event is triggered from the Game module when the player reaches game state. This is used to measure initial download size.
+Take into account that Ads are not allowed in Basic Launch, and will be disabled even if you would integrate them.
+Full SDK Integration
+Full Implementation
+
+A full integration of the SDK, involves the basic integration requirements and these additional ones:
+
+Gameplay start/stop events: allow us to measure and report on gameplay experience
+(if applicable) Data module for saving user game progression - see Progress Save
+(if applicable) User module for account integration and using username/avatar - see Account Integration
+(optional) Load start/stop events: allow us to measure and report on in-game loading times and fail rates
+Sitelock & Whitelisting
+Basic Implementation
+
+To avoid that your game files are stolen, you might implement a sitelock in your game. Read more about in the SDK docs of your game engine. If you implement a sitelock, you need to take into account that CrazyGames operates on multiple crazygames.com origins. If applicable, make sure to whitelist each of our domains to allow all our users to play. Our iOS and Android apps have their own origins, which need to be whitelisted as well.
+
+Read more on our page about Sitelock and the origins of our apps.
+
+User Consent
+In case your game collects additional personal data beyond the events in our SDK, the game should add a Terms & Conditions and/or Privacy Policy notice to new players.
+
+We recommend to make this a simple notice rather than a pop-up blocking the user.
+Bloxd.io shows a good example of in-game privacy policy
+Racing Limits opens the privacy policy in a new tab
+
+Gameplay requirements
+This page outlines the requirements that submitted games must meet to ensure a high-quality game experience. While we are not looking for the "perfect" game, our goal is to help players discover your well-crafted game without encountering inappropriate or subpar content. Only games that prioritize quality and gameplay will be allowed on the platform. Developers who repeatedly submit non-compliant games may face restrictions on future submissions.
+
+Our quality guidelines are inspired by the Facebook games.
+
+Basic Gameplay Requirements
+Basic Implementation
+
+Our team performs several visual and functional checks on each submitted game. Ensure your game meets the following criteria:
+
+Readable Content: Text and images must be legible on devices with a devicePixelRatio:1, on responsive iframe sizes (16x9 ratio) and mobile screens (if applicable). These are the most important iframe sizes for our audience:
+907 x 510 px (desktop - non-fullscreen)
+1216 x 684 px (desktop - non-fullscreen)
+1077 x 606 px (desktop - non-fullscreen)
+821 x 462 px (desktop - non-fullscreen)
+1366 x 768 px (desktop - fullscreen)
+1920 x 1080 px (desktop - fullscreen)
+1536 x 864 px (desktop - fullscreen)
+1280 x 720 px (desktop - fullscreen)
+800 x 450 px (mobile)
+1080 x 607 px (tablet)
+Consistent Physics: The game's physics must perform consistently across different monitor refresh rates (e.g. 144 Hz, 165 Hz)
+Language Support:
+The game must have English localization
+If translations are included, they should be accurate and of high quality. The game should use the user's language based on locale info provided through the system info method in our SDK, and if not available/set fallback to English.
+Intuitive controls: The game should have intuitive controls on different types of devices. Have a look at the section about restricted keys
+Smooth Performance: The game must load quickly and play seamlessly without errors or crashes
+Originality: Game names, assets, and overall content should exhibit originality
+Fullscreen Functionality: Fullscreen mode is automatically provided by CrazyGames. Custom in-game fullscreen buttons are prohibited, as they can interfere with other features (e.g. monetization).
+No Cross-Promotion: The game should not include cross-promotions for external or internal games/platforms.
+Exception: Privacy Policy and Terms and Conditions if applicable. Check requirements intro for details.
+Following exceptions are allowed as long as these are not a main CTA on the menu :
+Community links (discord, dev website, ...) are allowed on the game menu only as long they don’t lead directly to a playable web version
+Game Store (Epic, Steam, ...) links to the game on desktop games only on main menu or at the end of a demo game
+Backlinks to CG home or category page are accepted but not promoted
+Links to other game(s) in the same series of games (e.g. Horror Tale 1, 2, 3, …)
+App Store links are never allowed in-game, and should use the configurable game metadata fields in our Developer Portal
+Suited for minors: CrazyGames is a website for an audience aged 13 or more. Your game must be PEGI 12 compliant.
+We host a standalone website dedicated for kids games, yet note that monetization is disabled on that domain.
+Full Gameplay Requirements
+Full Implementation
+
+These additional requirements are mandatory for full implementations:
+
+Games should land new users in gameplay immediately.
+If this is not feasible given the game specifics, a maximum of 1 click is allowed.
+Additional Quality Guidelines
+Guideline
+Advertisement requirements
+Full Implementation
+
+Warning
+
+If your game is currently in the Basic Launch phase:
+Advertisements will be disabled; no revenue will be shared.
+If you did integrate the Ads SDK, our team will check to make sure the game runs smoothly while ads are disabled. The game will be rejected if it does not. For example: Game doesn't freeze between levels. There should not be rewarded ad buttons without effect.
+Only Ads requested through the CrazyGames SDK are allowed.
+These types of advertisements are available through the CrazyGames SDK:
+
+Video ads
+Midgame ads: between levels or stages
+Rewarded ads: when giving a reward (CrazyGames provides fallback banners)
+In-game banners
+In-game ads and purchases should provide a meaningful and rich experience for the player and should not appear before the user has experienced a reasonable amount of gameplay. Most importantly, in-game ads should not:
+
+Interrupt gameplay
+Trigger deceptively
+Chain multiple ads
+Video ads
+Video
+
+Video ads can not interrupt gameplay and shouldn't come as a surprise: Advertisements should not be shown while a user is playing. We do not allow disruptive ads since they will scare users away. Instead, show them at a logical point for the user. Examples are during a level transition, a map change when the player died etc. Do not show a midgame ad on a navigational button (e.g. when clicking the main menu icon or opening the settings or opening the shop).
+Your game should be paused during a video ad: Ensure that a user cannot progress the game while requesting or showing an ad. Disable buttons, or show a spinner that blocks interaction. An ad request is not instantaneous: several auctions are held and take some time to return with a reply. Block the UI until either an adFinished or adError event occurs.
+Handle unfilled ad calls correctly: Sometimes, the request for a midgame ad will be unfilled (either because of timing restrictions, adblock, or low demand). In this case you receive an adError event. You should handle this case correctly and ensure that the game continues.
+Your game should be muted during a video ad: Video advertisements have audio. Ensure that your in-game sound and the advertisement audio are not playing together. You should mute your audio whenever an advertisement starts playing, and unmute it when the ad has finished. Only mute the audio when the ad actually starts playing, and not when you request an ad. It is possible no advertisement is available, and muting and unmuting your music without a visual change is not user-friendly.
+Request midgame ads at opportune moments without worrying about frequency or minimum intervals:
+We take care automatically of how often a midgame ad is shown, taking into account the start of the game, the midroll frequency (max 1 every 3 minutes) and interplay with rewarded ads
+If the next midgame ad request is too early, it just gets ignored by the SDK and there is no impact for the user. This means that you can request a midgame ad at any opportune moment in the game without worrying about when the last midgame was shown
+Rewarded ads
+Rewarded ads should be special opportunities that a user looks forward to, and not an expectation whenever the user plays your game. Poorly designed levels that can only be completed by a rewarded ad are not acceptable. Instead, occasionally give the user the option to watch a rewarded ad that gives them a cool bonus, or a funny cosmetic change.
+
+We have strict requirements to include rewarded advertisements. Before you start implementing please make sure you read them carefully:
+
+Placement and frequency
+
+Do not offer a rewarded ad too often. Inform the user of this with a timer or hide the ad request button.
+Do not chain multiple ads, i.e. watch more than one rewarded ad to receive a single reward.
+Do not promote the rewarded ads too aggressively. If the game rewarded ads are well-implemented users will want to use them, there is no need to remind them too often.
+The request button should not appear on an active gameplay screen. For example, in a racing game, the request button can't appear during the race.
+Reward UI
+
+The button to request a rewarded ad should be easily accessible in a consistent location.
+The button to request a rewarded ad can not be misleading in any way. Specifically, the continue without watching a rewarded ad should be the same size, font, color, etc.
+It needs to be clear immediately that the reward is optional. Hiding or delaying the skip or close button on the offer is not allowed.
+It needs to be clear for players that they will have to watch an advertisement in exchange for the reward. This can be done by displaying a video icon for example.
+Provide an alternative to watching an ad. For example, a user can also buy the reward with coins that he can receive during the game.
+Rewarded ads callbacks
+
+When the ad has finished (adFinished), make it clear that the player is rewarded. You can display an animation or a notification.
+When our rewarded ad returns with an adError callback, do NOT reward the player.
+We aim for a high ad fill rate, and provide alternative incentives if no ads are available.
+See below for more info about Ad Blockers.
+Rewarded ad examples:
+
+
+In-game store ads
+End-of-game multiplier
+Out of lives ads
+In-game store ads are a great way to monetize players who are in a "purchase" mindset. You can award monetary value or items they otherwise have to buy.
+
+
+In-game banner ads
+Banner
+
+In-game banners are only allowed on useful screens with content that are open for at least 5 seconds on average.
+Make sure that in-game banners do not block any game UI on all game sizes (including on mobile).
+Do not show in-game banners during game-play.
+In-game banners must be clearly distinguishable from game content.
+A maximum of 2 in-game banners may be displayed on the same screen/view, provided that the overall user experience remains clear, non-intrusive, and user-friendly.
+In-game banners can have a performance impact and may negatively affect the user experience, which can reduce the overall quality and usability of the game.
+Adblockers
+Full Implementation
+
+We strive to limit the use of adblockers on the CrazyGames platform, by disabling certain functionalities and blocking rewarded ads when an adblocker is detected. However since this detection won't ever be 100% correct, we want to ensure that even users where we detect an AdBlocker can play the game according to these rules:
+
+Players with AdBlocker should be able to play the game normally: It is never allowed to block players with AdBlockers from playing, or penalize players with certain disadvantages
+You can block certain features or special functionalities in the game; make sure to show a notice on such functions that they are blocked because of the AdBlocker usage
+Do not use popups as they might interfere with fullscreen behaviour and with CrazyGames adblock notices
+Do not keep the rewarded ads clickable but without effect
+
+Have a look at our Quality Guidelines for more suggestions and best practices on how to publish a succesful game, covering onboarding and other principles. These are not mandatory but strongly recommended.
+
+Account integration requirements
+The CrazyGames account system
+
+The CrazyGames account system is a powerful tool that allows our users to save progress, play on multiple devices, customize their username and avatar and play with their friends. The most succesful games on our site integrate seamlessly with our account system.
+
+Over 35 million players have a CrazyGames account, many of them playing actively every week.
+
+We want to ensure this experience for our users:
+
+No standalone in-game username or avatar is needed
+No additional login flows in-game are needed
+Guests can also play the games
+Integration scenarios
+We understand these requirements can have a substantial impact on your game. However it's not necessary to do customization before releasing your initial game version which we describe below. We distinguish these 4 scenarios:
+
+
+Games without accounts
+Use CrazyGames profile
+In-game account (basic)
+In-game account (full)
+Basic Implementation
+
+If your game doesn’t have the notion of users, you are not expected to integrate with our user module.
+
+You can however use the Data module in our SDK to save user progress, or alternatively rely on our APS system.
+
+
+Progress save
+Full Implementation
+
+Saving game progress
+
+Players care A LOT about their progress in games, and expect their progress to synchronize across their devices. CrazyGames offers a number of methods to save progress in the cloud. Unless progress is not applicable for your game, we require you to implement one of these methods.
+
+Preferably you use the CrazyGames Data module which saves the user's progress on their CrazyGames account.
+Progress for guest users is automatically saved locally
+When a guest logs in the progress is synced to their cloud (as long as no cloud progress was present).
+If your game has their own back-end to save data, you can use the User module to link back-end data to the user's CrazyGames account.
+Take into account the flows described above in In-game account integration to handle specific scenarios like guests logging in.
+Make sure to consider that the same user might log in on multiple devices, and multiple accounts can share a single device.
+Alternatively you can use our Automatic Progress Save system, which automatically syncs local progress to the cloud. This is not allowed for games with in-game purchases as it relies on local data.
+In-game account integration
+Full Implementation
+
+This section explains how to integrate CrazyGames accounts with your in-game account system according to our requirements.
+
+Preparation
+Your CrazyGames game version will need to allow using CrazyGames userId as identifiers within the game. This is a unique string tied to the CrazyGames account that can be accessed through the User module in our SDK.
+
+Logic to implement at game launch
+Start by retrieving the current user by calling getUserToken() to get a JWT Token and verifying the token on your server. This will get you the player's userId.
+
+Request the current user account every time the game starts, making sure to cover cases where different users share the same device or users change profile information (avatar/username/...).
+
+Option 1: User is not logged in (userNotAuthenticated error)
+You should always allow the user to start playing as Guest, as main scenario.
+
+Creating in-game accounts for CrazyGames guests
+
+We recommend NOT to create an in-game account in this scenario. If you do, you should be able to link it to a CrazyGames account when the guest logs in. Avoid relying solely on local data to identify Guests across sessions as multiple users might share the same device.
+
+It is allowed to show a Login with CrazyGames button but not as a main CTA.
+
+Don't trigger the Auth prompt automatically as this might confuse the user
+
+Option 2: User is logged in on CrazyGames (userId is returned)
+Check if the CrazyGames userId account already exists in your back-end.
+
+Case: CrazyGames account (userId) is already known in your back-end:
+Users can update their CrazyGames username & avatar, so if you store this info on your back-end make sure to update it by calling an endpoint on your server with the actual username and profile picture.
+Fetch the data for this user from your back-end, and start playing!
+Case: The CrazyGames account (userId) is not yet known to your game:
+Automatically create a game account using the player's CrazyGames account. Make sure to make the link based on the userId unique field, as other fields like username might change.
+(optional) If feasible and desired, you can save any local progress the user made as guest to the new account. Alternatively this user will have fresh data in your back-end.
+Logic to implement during the game
+Players changing CrazyGames accounts while playing
+Guest users logging into their CrazyGames account while playing should be detected using an Auth Listener, in this case we will expect you to follow the "User is logged in on CrazyGames" flow above and if necessary refresh the game. This only applies to users playing as guest in the game.
+When a user logs out during gameplay, the entire web page is refreshed, so there is nothing else to do in this case. The game flow will start from the beginning.
+Login Button
+You can show a login button to guests:
+
+Do not make this the main CTA blocking the user
+A good placement is in the top right corner
+If you do this, the button should trigger the Auth prompt method in our SDK.
+Don't allow Guests to use different login methods than 'Login with CrazyGames'
+Logout & account linking
+Logging out in the game and allowing login with external login options (e.g. Facebook, Google, email) is not allowed.
+If you want to offer importing existing in-game accounts or exporting CrazyGames account, you are responsible for transferring/migrating progress correctly.
+Our SDK contains an optional Account link prompt function
+This is strongly recommended if you create in-game accounts for CrazyGames guests
+If your game has In-Game Purchases, this is recommended if you create in-game accounts for CrazyGames guests
+
+Multiplayer requirements
+Games that offer an online multiplayer experience have 2x higher long term retention than single player games. We are strongly supporting multiplayer games on CrazyGames. Our Play with Friends functionality is designed to enhance the social experience of players, offering many benefits that foster community, engagement, and enjoyment.
+
+How it works
+Users must have a CG account and be logged in to use the Friends feature
+Users can send and receive friend requests
+When a user is in a joinable location within a game, following functionalities are available:
+
+Friends can join the user
+
+Friend list join
+
+The user can invite their friends, who will get a notification if they’re online
+
+Friend list invite
+
+The Game module in our SDK offers the functionality to support this this
+
+Games that support Friends functionality are featured on the dedicated Multiplayer landing page
+Requirements for Online with Friends
+Full Implementation
+
+If your game includes an online multiplayer mode, the following requirements must be met to be eligible for our Multiplayer landing page.
+
+Implement multiplayer flows
+A smooth experience to bring and keep friends playing together is crucial for a succesful multiplayer game. Your game should implement these features:
+
+Sharing the user's room & status: Pass information on the user's room in your game through the CrazyGames SDK so we can activate our Join/Invite functionality. This will allow users to join easily via the CrazyGames UI. Avoid onboarding scenes for players joining like this, or make them skippable.
+(New) Use the Update Room functionality to indicate in which room (unique within your game at any time) a user is playing, and whether or not the room is open for other players to join (isJoinable). Use the inviteParams to pass information from the inviting players to their friends. Note: for existing games, the Invite Button remains supported.
+If you also want to allow copying direct invite links within your game, integrate the Invite Link functionality.
+Instant Multiplayer: The first player in a party should be placed directly into a new private room with default settings.
+
+When the IsInstantMultiplayer flag is set to true in the SDK, the game should launch directly into multiplayer mode when triggered from the CrazyGames UI. This happens for example on the Multiplayer landing page.
+An intermediate configuration screen (e.g., game mode, player count) is acceptable.
+For games that support 20+ players, you may instead place the player directly into public gameplay.
+In all cases, the user should be joinable immediately after launching the game so their friends can join.
+Round-based games: At the end of a match, players should be able to continue playing with the same group without having to navigate back through the CrazyGames UI. Either by starting the next match immediately in the same room, or by directing all users to the same new room.
+
+Refer to the visual below which covers each of these cases:
+
+Multiplayer flows
+
+Additional multiplayer requirements
+Lobby Size: Submit lobby sizes when uploading your game build (For changes to existing games please contact our team).
+CrazyGames usernames: must be displayed in-game so players can recognize their friends. Read more on our User module page.
+If you want to implement chat functionality, check the specific requirement below.
+Guidelines for Online with Friends
+Guideline
+
+The following guidelines are strongly recommended for a good experience in playing with friends:
+
+Preferably players can join an existing room at all times, and while a round is on-going go in spectator mode. Alternatively your game should show a popup that the room is not available.
+Often users are already loading the game they want to play before joining/inviting each other. Implement our Room join listener to ensure a smoother UX without a page reload.
+Our User module offers a method to get the list of CrazyGames friends for the user. You can use this info within your game for various UX improvements (joining, notifying, matchmaking, ... )
+Multiplayer games in Basic Launch
+Basic Implementation
+
+Multiplayer games that require a large audience to ensure a good gaming experience may skip Basic Launch and proceed to Full Launch immediately. In that scenario your game is required to comply to the Full Launch integration requirements.
+
+For multiplayer games that have a single player component and that do not require a large testing audience, a Basic Launch step is required.
+
+Our QA team will decide which flow applies for your multiplayer games, and optionally provide feedback to you.
+
+Chat and User Generated Content (UGC)
+Basic ImplementationFull Implementation
+
+Chat is a powerful tool for engagement, but carries risks. If you decide to implement chat functionality:
+
+Your game should disable your chat based on the game settings. In case of complaints, we will require you to disable chat alltogether.
+We require you to add chat moderation. The simplest solution is a profanity filter. Refer to this sheet for a non-comprehensive list of words to block.
+A more advanced solution is AI based moderation. We partner with Lasso Moderation and you are eligible for a referral bonus when integrating their solution. Read more on our Partners pages. This is not recommended for Basic Launch games.
+Moderation is also required if your game involves User Generated Content like uploading custom images or drawings. The Lasso solution can cover those content types as well.
+
+
+Game covers
+You must add 3 cover images (landscape, portrait and square) and upload preview videos when you submit your game to CrazyGames. We also advise updating your covers occasionally after publication. But what are the game covers, and why is it important to spend time perfecting them? What guidelines should you follow to create something that looks amazing?
+
+This guide explains our specifications and provides guidelines to create succesful covers.
+
+What are game covers?
+Game covers are used to display your game on our website. They are crucial, as they need to attract the attention of new users and make them want to play your game in a fraction of a second.
+
+Think of CrazyGames as the storefront for your web game. A beautiful cover will help your game stand out from the crowd and make people want to click on it. On the other hand, a poorly designed game cover will have a negative impact on your game’s performance. Users will not click on your game and will scroll past it because it doesn’t look appealing.
+
+Let’s take YouTube as an example. You’ll notice that, for the most part, clear and eye-catching covers generate more views than randomly generated ones. Content creators put a lot of effort into creating good covers because that’s the first thing users see while scrolling on the platform. Search for one specific topic, and suddenly thousands of videos will show on your screen. Only the most appealing ones will get your attention. The same applies for CrazyGames, where your game is displayed in categories that contain hundreds of games.
+
+That’s why you should make professional and eye-catching game covers. It’s the first thing our users will see while scrolling on the platform, so don’t rush the final step! Here's a few general guidelines:
+
+Don't reinvent the wheel: Look at games you like, or those in the same genre, and see how other developers created great-looking covers. Take some time to explore platforms like Steam or Epic Games to find inspiration! Find Inspiration
+Update your game covers occasionally: Updating your game cover is an excellent way to encourage players to revisit your game. We noticed there is often a spike in sessions when covers for older games are updated. However, you shouldn’t update it too often, as users will lose familiarity with your game. If you update your game by adding new content, this is a great time to update your cover and show something new. Think about seasonal events as well, in case you plan on bringing some Christmas magic to your game for the holiday season!
+Get help!: If you don’t have the skills or the tools to do it yourself, you can always contact a professional designer on Fiverr or UpWork.
+Cover Images
+Mandatory sizes
+You’ll need to upload 3 different sizes for your game :
+
+Landscape - 16:9 (1920x1080 pixels)
+Portrait - 2:3 (800x1200 pixels)
+Square - 1:1 (800x800 pixels)
+The three covers should feature consistent visuals and aesthetics, ensuring that users can easily recognize your game whether they're looking at the square or landscape cover.
+
+Here are a few examples:
+
+Highway Racer 2 covers CrazyMx covers Smash Karts covers Crazy Crypt covers
+
+Restrictions
+Don’t put borders around your game covers
+Don’t write anything else other than your game’s title (e.g. don’t write New, Updated, Play or Play now,...)
+Don’t put icons or store logos in the visuals
+Don’t use copyrighted visuals that you don’t have the right to use
+Don’t use blurry or pixelated visuals
+Guidelines for cover images
+Here are a few guidelines that you should follow.
+
+Don’t just take a screenshot of the game
+We know it’s much easier to take a screenshot of the game and call it a day, but try to be more creative! Users can preview the gameplay by hovering over your game cover anyway.
+
+You can use the main character of your game as the primary visual element, a big title with a nice font, or a graphic that refers to the game without even being taken from the game itself. Game covers don’t have to be an accurate representation of the gameplay. They exist to attract users to your game’s world! Feel free to express what your game is about artistically.
+
+Game Cover Build NowGame Cover Shell Shockers
+Keep it simple!
+Over-cluttered covers are hard to scan, especially on small screens. You should keep it clean, well-balanced, and easy to read.
+
+Game Cover Tiny FishingGame Cover Capybara Clicker
+Put the name of your game directly on the cover
+Adding the name of your game to the cover is a great way to make it more memorable! It also makes it distinct from other games that share a similar style.
+
+Game Cover Helix JumpGame Cover Stick War
+Use a nice and stylized font
+Use a font that fits your game’s aesthetic. Plenty of free fonts on the internet that could be perfect for your game, so don’t pick Times New Roman as your first option!
+
+Game Cover Wild RootsGame Cover Highway Racer 2
+Preview Video
+Most of the game thumbnails on CrazyGames also have a video preview when you hover. This chapter explains how to create a succesful preview video.
+
+Create a compelling gameplay video by capturing the most exciting and visually appealing moments. Since the developers quickly have access to the end-game levels or the most extraordinary cosmetics in the game, you can create a better video when such opportunities happen. To give a rough idea and some starting points, you can start by highlighting the best features of the game:
+
+For driving games think about expensive cars driving through various maps and weather conditions, using different camera angles like dashboard views for an immersive experience.
+For multiplayer games, record a lobby full of players, cycle through different maps, and include the biggest celebration/prize, if applicable.
+For action-packed games, showcase intense battles across multiple game modes, featuring different weapons, killstreaks, and even impressive buildings or platforms created within the game.
+If character progression is a key feature, display evolution and customization, ensuring that different game modes are represented to highlight gameplay variety.
+You can use animated video as long as it represents the gameplay and is not misleading.
+Video Requirements
+Video Length: 15-20 seconds maximum, longer videos will be cut to 20 seconds
+Video Size: 50MB maximum
+Resolutions:
+Full-screen size in landscape (1080p - 16:9 ratio) (mandatory)
+Full-screen size in portrait (1080p - 2:3 ratio) (mandatory)
+Avoid these elements:
+Black screen and logo transition
+Black bars top & bottom
+Default mouse cursor
+"Play Now" text or promotional texts
+App or social media icons
+No fast-forwarding: We automatically speed up the video slightly when processing it
+No sound
+Use your static cover as the opening frame: This creates a seamless transition from the thumbnail to the animated preview.
+Video editing & conversion tool
+
+We recommend using
+
+ClipChamp (Windows) and iMovie (Mac) for video editing
+HandBrake: an open-source video conversion tool
+
+Quality guidelines
+Guideline
+
+This page describes a number of guidelines to publish a succesful game on the CrazyGames platform. The guidelines should be used alongside our mandatory requirements.
+
+Whether a game is "good" or "bad" can often be subjective, but there are best practices learned from our experiences with successful games. The following list is non-exhaustive.
+
+Onboarding
+For a game to be successful it is crucial that users get to gameplay quickly, understand what the game is about and how to control it. A good onboarding is paramount to make this possible:
+
+Provide a simple onboarding phase where new users land directly.
+Implement the onboarding in gameplay.
+Focus on the core functionality so users can start playing, avoid explaining every single feature.
+Make the onboarding phase skippable.
+Prioritize visuals and limit the use of text for onboarding.
+Show the user how to control the game with a keyboard overlay or mouse gestures. See Restricted Keys for more info.
+Make sure the UI is clear.
+Buttons are clearly labeled to indicate how to proceed.
+Buttons are not sized to encourage ads or other behaviors.
+Buttons do not have delays to confuse users or encourage other behaviors.
+General principles
+Once a user is onboarded into the game, here are some general principles for web games:
+
+There are clear goals that the player can reach.
+The game is easy to learn.
+The game is easy to understand — the language is correct and clear, well translated, or the game makes good use of universal graphics prompts.
+The controls are consistent and intuitive throughout the game.
+What makes your game a fun experience?
+Attributes of a web game that adheres to best practices:
+
+The game responds quickly to the player's actions.
+The challenge, strategy, and game story are balanced and well-paced.
+The display layout is comfortable and intuitive.
+The audio is comfortable and appropriate for the game.
+The game interface is designed for the user's device (desktop and optionally mobile).
+Various player segments can enjoy the game.
+The game story or scenarios are interesting where applicable.
+There are no overly repetitive or "boring" tasks in the game.
+The game processes information quickly to give players a feeling of smooth flow and continuity.
+Solo play and playing with friends:
+Playing alone is as prominent as playing with friends if both are offered.
+If playing alone is not available, the game clearly explains that.
+Is your game unique?
+Attributes of a web game that adheres to best practices:
+
+It should be easy to improve or modify the game to add new content like new levels, art, story elements, etc.
+Major features such as the game's genre should not change after submission.
+The game should be frequently maintained and updated.
+The game is not easily confused with another that features a similar name or iconography.
+The game does not use a common identifier unless the game developer owns the respective IP.
+E.g. the name “Super Chess” is unique and clear, while simply “Chess” is not.
+The name “Scrabble” is clear and unique, but can only be used by the IP holder.
+Is your game aesthetically pleasing?
+Attributes of a web game that adheres to best practices:
+
+Graphics should be of high quality.
+High resolution — quality games are visually pleasing.
+Quality games have consistent resolution throughout the game.
+Quality games are free of graphical defects like compression artifacts.
+Audio should be of high quality
+Audio levels are consistent.
+Sounds aren't too loud or quiet
+Any music in the game complements the visual experience
+In addition to having no technical graphical issues, the game is internally consistent, coherent, and has attractive visuals. The games aesthetic style should remain consistent and not switch between looks i.e. moving from realistic to cartoony, or high resolution to low resolution.
+
+The game is clear about what it is. It isn't misleading and is clear about what genre and type of game it is overall. The name and imagery presented on CrazyGames should reflect accurately the type of game the player will experience. The game only changes its name and associated imagery where totally necessary, such as when a significant update or visual overhaul of the game takes place.
+
+Restricted Keys
+It's important that the game controls are intuitive and easy to learn.
+Preferably make your key bindings adapt to the user's keyboard layout, rather than requiring the user to change their own bindings.
+Note that in some countries, like France, the standard keyboard has AZERTY layout, and the typical WASD keys for movement are ZQSD on that layout.
+Avoid common keys that have other behaviour on web:
+Escape closes fullscreen
+Ctrl / Cmd + W closes the tab; you can disable this when the user is in fullscreen
+
+Introduction
+When integrating the CrazyGames SDK, make sure to follow our requirements. They will help you use the SDK in the best way possible and guide you in terms of technical, gameplay, ads and account integration requirements.
+
+Our HTML5, Unity, and Godot SDKs support all the scenarios. Other SDKs miss certain functionalities for which you can usually manage at least basic integration through the HTML5 version. Most game engines that support WebGL also have a way of interacting with JavaScript when running in browser.
+
+The SDK has the following modules:
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+ad	display video ads & detect adblockers	🟩 Fully supported
+banner	display banners	🟩 Fully supported
+game	various game events and integration	🟩 Fully supported
+user	interact with logged in user	🟩 Fully supported
+data	store user data that persists across devices	🟩 Fully supported
+In-game Purchases	handle in-game purchases (not a separate module)	🟩 Fully supported
+
+Getting started
+This section explains how to get the CrazyGames SDK up and running in your engine.
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+You can install the SDK by including the following script in the head of your game's index.html:
+
+<!-- Load the SDK before your game code -->
+<script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>
+Manual initialization
+
+The v3 SDK requires initialization before being used. This can be done by calling the init method:
+
+await window.CrazyGames.SDK.init();
+It is important to await for the initialization since it happens asynchronously, and the SDK is unusable until initialized. We recommend that you do this before the game starts, for example on the loading screen.
+
+Promises
+
+The SDK relies on promises and doesn't accept a callback parameter. If you don't have the possibility to use await, you can call the async methods with .then(...).catch(...), like in the example below:
+
+// await example
+try {
+    const user = await window.CrazyGames.SDK.user.getUser();
+    console.log(user);
+} catch (e) {
+    console.log("Get user error: ", e);
+}
+
+// .then .catch example
+window.CrazyGames.SDK.user
+    .getUser()
+    .then((user) => console.log(user))
+    .catch((e) => console.log("Get user error: ", e));
+The HTML5 SDK docs will contain only examples using await.
+
+
+Important information
+Don't miss this section with important information regarding your engine
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+Major changes when migrating from v2 to v3
+
+You can find the docs for the old HTML5 v2 SDK here.
+
+The SDK requires to be manually initialized now
+Some async get methods are now simple variables:
+window.CrazyGames.SDK.environment
+window.CrazyGames.SDK.user.isUserAccountAvailable
+window.CrazyGames.SDK.user.systemInfo
+Methods to report loading changed from sdkGameLoadingStart() and sdkGameLoadingStop() to loadingStart() and loadingStop()
+The v2 SDK was throwing inconsistent errors (strings or objects). The v3 SDK has now the following error format:
+
+// there is always a "code" and a "message" containing more information
+{code: 'userAlreadySignedIn', message: 'The user is already signed in'}
+
+Development & Testing
+During the development, you will be running your game on different domains/environments:
+
+localhost - our SDKs work fine on localhost domains, where they display demo ads/banners and try to simulate other behaviour.
+editors - this applies to Unity, Construct, Cocos, etc. In editors our SDKs will also display demo ads/banners and try to simulate other behaviour.
+Preview tool - our QA environment (on crazygames.com/preview) offers the most realistic version of CrazyGames.com. After you've finished integrating the SDK, create a new game on Developer Portal, upload your files, and you will be able to preview your game. Obtaining a working Xsolla token is possible only here.
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+The localhost and 127.0.0.1 domains are considered local environments. Advertisements are not available. Instead, an overlay text will be displayed. For other events such as happy time, gameplay start, etc. the console output can be consulted. If you are using a different domain/ip for local development, you can always enforce the local environment by appending the ?useLocalSdk=true query parameter to the URL in your browser.
+On CrazyGames domains the SDK has the crazygames environment, where it functions properly.
+On any other domains (including your domain on which you may host your game) the SDK has the disabled environment. All the calls to the SDK methods will throw an error. To prevent this, we recommend checking on which environment the SDK is running and avoiding making use of it outside local or crazygames environments.
+The environment can be retrieved like this:
+window.CrazyGames.SDK.environment;
+
+Video ads
+The ad module contains functionality for displaying video ads and for detecting adblockers.
+
+Requirements for Advertisements
+
+Please be sure to read our advertisement requirements, since your game will be rejected without any feedback if it doesn't follow them.
+
+Getting started
+After reading our SDK Introduction page for your engine, access the ad module like this:
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+window.CrazyGames.SDK.ad;
+
+Video ads
+We support two different types of video ads: midgame and rewarded. Read more on our advertisement requirements.
+
+Midgame advertisements can happen when a user died, a level has been completed, etc.
+Rewarded advertisements can be requested by the user in exchange for a reward (An additional life, a retry when the user died, a bonus starting item, extra starting health, etc.).
+To request a video ad:
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+const callbacks = {
+  adFinished: () => console.log("End midgame ad"),
+  adError: (error) => console.log("Error midgame ad", error),
+  adStarted: () => console.log("Start midgame ad"),
+};
+window.CrazyGames.SDK.ad.requestAd("midgame", callbacks);
+// or
+window.CrazyGames.SDK.ad.requestAd("rewarded", callbacks);
+Warning
+
+Make sure to mute the audio and pause the game when the ad starts (adStarted callback), and to unmute the audio and continue the game when the ad finishes/fails to load (adError and adFinished callbacks)
+
+
+Callbacks
+The adError callback is also triggered if the ad is not filled or if something else goes wrong. Your game should be able to handle this. CrazyGames provides fallback banners and house-ads to limit unfilled ads.
+
+The returned errorData object will look like this:
+
+{
+    "code": "unfilled",
+    "message": "No ad available"
+}
+Possible error codes:
+
+adsDisabledBasicLaunch - during Basic Launch ads are disabled
+unfilled - no ad available
+adblock - an adblocker prevents showing ads
+adCooldown - the ad was requested too soon, the usual midgame ad request interval is 3 minutes, taking rewarded and preroll ads into consideration.
+other
+Adblock detection
+Info
+
+We require games to function even when the user has an adblock. The detection is not foolproof, and it would be very frustrating for a user not running any adblock to get a non-functional game. You can block extra content, such as custom skins, or some levels, to motivate the user to turn off their adblock. Also, keep in mind that turning off the adblock usually requires a page refresh. Make sure that the progress is saved, or the user may just decide to stop playing your game.
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+You can use the code below to detect if the user has an adblocker.
+
+const result = await window.CrazyGames.SDK.ad.hasAdblock();
+console.log("Adblock usage fetched", result);
+
+Banners
+The banner module contains functionality for displaying banners within your game.
+
+Requirements for Advertisements
+
+Please be sure to read our advertisement requirements, since your game will be rejected without any feedback if it doesn't follow them.
+
+Getting started
+After reading our SDK Introduction page for your engine, access the banner module like this:
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+window.CrazyGames.SDK.banner
+
+Request static banner
+This paragraph explains how to request static banners. There are 5 banner sizes available:
+
+Leaderboard (728x90)
+Medium (300x250)
+Mobile (320x50)
+Main (468x60)
+Large Mobile (320x100)
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+To begin, you need to have an HTML container of the banner size present on the screen:
+
+<div id="banner-container" style="width: 300px; height: 250px"></div>
+And fill that using javascript:
+try {
+  // await is not mandatory when requesting banners,
+  // but it will allow you to catch errors
+  await window.CrazyGames.SDK.banner.requestBanner({
+    id: "banner-container",
+    width: 300,
+    height: 250,
+  });
+} catch (e) {
+  console.log("Banner request error", e);
+}
+
+Request responsive banner
+The responsive banners feature will request ads that fit into your container, without the need to specify or select a size beforehand. The resulting banners will have one of the following sizes:
+
+970x90
+320x50
+160x600
+336x280
+728x90
+300x600
+468x60
+970x250
+300x250
+250x250
+120x600
+Only banners that fit into your container will be displayed, if your container cannot fit any of these sizes no ad will be rendered. The rendered banner is automatically vertically and horizontally centered into your container.
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+Set your container size to a non-null value:
+
+<div id="responsive-banner-container" style="width: 500px; height: 500px"></div>
+Request the responsive banner:
+try {
+  // await is not mandatory when requesting banners, but it will allow you to catch errors
+  await window.CrazyGames.SDK.banner.requestResponsiveBanner("responsive-banner-container");
+} catch (e) {
+  console.log("Error on request responsive banner", e);
+}
+
+Errors
+Requesting a banner can also throw an error, for example:
+
+{
+    "code": "bannerCooldown",
+    "message": "A banner has already been requested for container banner-container-crazygames-inner less than 30 seconds ago, please wait.",
+    "containerId": "banner-container-crazygames-inner"
+}
+Possible error codes:
+
+bannersDisabledBasicLaunch - during Basic Launch banners are disabled
+unfilled - no banner available
+missingId - the banner id wasn't provided
+notVisible - the banner container is not fully visible on page, please ensure it doesn't go out of the page and it is not hidden
+noAvailableSizes - the requested responsive banner size doesn't fit any of our available sizes
+notCreated - the banner container is not present on the page
+videoAdPlaying - banners cannot be rendered/refreshed while a video ad is playing
+invalidSize - banner size is not valid, please use only the available sizes
+bannerCooldown - banners cannot be refreshed too quickly, please allow for some time, normally 30 seconds, before refreshing the same container banner
+maxRefreshReached - you reached the banner refresh limit per gaming session
+bannersDisabledMobileApp - banners cannot be rendered when your game is embedded in the mobile app
+other
+Refreshing & clearing banners
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+To refresh the banners, simply call the requestBanner or requestResponsiveBanner methods again with the same container id.
+
+The banners have the following limitations:
+
+There is a minimum delay of 30 seconds between banner refreshes. If you call the request banner methods more often, you will receive the following error: A banner has already been requested for container banner-container less than 30 seconds ago, please wait.
+During a gaming session the banners can be refreshed up to 120 times (this applies to each banner size separately).
+Clearing the banners
+
+The SDK provides 2 methods for clearing the banners:
+
+window.CrazyGames.SDK.banner.clearBanner("banner-container");
+// or
+window.CrazyGames.SDK.banner.clearAllBanners();
+We recommend that you clear the banners after hiding them. Otherwise, when you request new banners again, the old banners may still appear for a fraction of a second, which negatively impacts the user experience.
+
+
+Limitations
+Banners won't display if they do not follow any of these rules:
+
+The same banner can be re-displayed only 30 seconds after the last display.
+The banner has to be fully inside the game window.
+
+Game
+The game module contains various functionality related to the game. After reading our SDK Introduction page for your engine, access the game module like this:
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+window.CrazyGames.SDK.game;
+
+Game Settings
+The game module contains a settings object, that can be accessed like this:
+
+A Full Implementation requires muteAudio support for HTML5, Unity, Cocos, and Construct games.
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+window.CrazyGames.SDK.game.settings;
+The settings object contains:
+disableChat - if true, the game should disable chat (if applicable). Read more about chat on multiplayer requirements page. Locally you can use ?disableChat=true to force this to true.
+muteAudio - please disable the game audio if this is true. Locally you can use ?muteAudio=true to force this to true. This setting should take priority over your in-game audio settings. So, for example, if you also offer an "Audio On/Off" toggle in game, be sure this doesn't enable the audio back if it is disabled in the SDK settings.
+You can also register a listener which will be called each time the game settings change:
+
+function listener(newSettings){
+    console.log("Settings updated", newSettings);
+}
+
+// to add a listener
+window.CrazyGames.SDK.game.addSettingsChangeListener(listener);
+
+// to remove a listener
+window.CrazyGames.SDK.game.removeSettingsChangeListener(listener);
+
+Gameplay start/stop
+We provide functions that enable us to track when and how users are playing your games. These can be used to ensure our site does not perform resource intensive actions while a user is playing.
+
+The gameplay start function has to be called whenever the player starts playing or resumes playing after a break (game start, resume, revive, enter next level, ...). The first event is used to determine your game's initial loading size.
+
+The gameplay stop function has to be called on every game break (entering a menu, ending level, pausing the game, ...) don't forget to call gameplay start when the gameplay resumes. Don't call this event when the user switches focus or leaves the game area (we handle this on our side).
+
+You can call the methods like this:
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+window.CrazyGames.SDK.game.gameplayStart();
+window.CrazyGames.SDK.game.gameplayStop();
+
+Game loading start/stop
+We provide functions that enable us to track when and how long the loading of your game takes.
+
+The loading start function has to be called whenever you start loading your game.
+
+The loading stop function has to be called when the loading is complete and eventually the gameplay starts.
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+window.CrazyGames.SDK.game.loadingStart();
+window.CrazyGames.SDK.game.loadingStop();
+
+Happy time
+The happytime() method can be called on various player achievements (beating a boss, reaching a highscore, etc.). It makes the website celebrate (for example by launching some confetti). There is no need to call this when a level is completed, or an item is obtained.
+
+Info
+
+Use this feature sparingly, the celebration should remain a special moment.
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+window.CrazyGames.SDK.game.happytime();
+
+Game completion percentage
+The reportGameCompletedPercentage method is used to notify CrazyGames that a player has completed your game or reached a progression milestone.
+
+Initially, this event will be used to improve the post-completion experience for players. For example, CrazyGames may use it to offer players the option to restart the game after reaching the end or notify players who had previously completed the game that the game had an update.
+
+The method accepts a progression value between 0 and 100. While reporting only 100 is enough, we encourage developers to provide intermediate progression updates whenever possible to better understand how players progress through games; this may unlock additional platform features in the future. An example is indicating intermediate progress to players on the platform, so they can strive to reach 100% or awarding badges when they complete a game.
+
+If your game has clear progression (e.g. levels, chapters, missions), report the player's progress as they advance. If your game does not have meaningful intermediate milestones, you can simply report 100 when the player completes the game.
+
+For endless, sandbox, or highly replayable games, developers may define their own interpretation of what constitutes 100% completion, as long as it is applied consistently. For example, an endless game could consider reaching a specific milestone, score, or objective as completion.
+
+Progression should generally move forward over time, and 100% should only be reported when the player reaches a meaningful completion point in the game.
+
+If you update your game with new content (e.g. additional levels or chapters), report the correct percentage on game start to reflect the player's progress relative to the new content. For example, a player who previously reached 100% may now be at a lower percentage, so call reportGameCompletedPercentage with the updated value when the game loads.
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+window.CrazyGames.SDK.game.reportGameCompletedPercentage(50); // player completed 50% of the game
+
+Game context
+Users can send feedback related to your game, which is sent to you via an email, and can be also viewed on our Developer Portal.
+
+To make this feedback more actionable, you can use the setGameContext method to attach relevant in-game data. For example, you might include the user's current level, equipped weapon, gold amount, or active skins.
+
+Providing this context makes it significantly easier to understand and reproduce issues. For instance, if a user reports being stuck but doesn't specify where, the attached data can immediately reveal the exact level and game state.
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+// this can be called at the start of the level
+window.CrazyGames.SDK.game.setGameContext({
+    "level": 12
+});
+
+// don't forget to clear the context when not relevant anymore, for example if the user exists the level
+window.CrazyGames.SDK.game.clearGameContext();
+
+Multiplayer features
+This section describes the game specific SDK functionality supporting our Multiplayer Requirements. Refer to that page for additional context on mandatory/optional requirements.
+
+Demo game
+
+We also created a demo game that showcases various multiplayer features from our SDK. You can download the source code from here.
+
+Instant multiplayer
+The game module contains the isInstantMultiplayer flag that indicates if you should direct the user into multiplayer mode, in a joinable location directly.
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+// this field was previously called isInstantJoin which is now deprecated,
+// please use isInstantMultiplayer
+window.CrazyGames.SDK.game.isInstantMultiplayer;
+
+Room data
+We define the room as a unique location where the user is playing or waiting in your game. Having room information available on platform level allows us to improve the user experience through showing an invite button, platform notifications, status visualization, joining friends, listing other CrazyGames users in your room to make friends connections, and more. The room doesn't have to exist on the server, you could also consider a room a special case when some players are connected to each other directly, via WebRTC for example.
+
+The room contains the following data:
+
+roomId - unique identifier for this room. If your game supports multiple regions, please ensure the roomId you report is unique across the regions, for example by joining the actual room id with the region id.
+isJoinable - allows the current player to invite other players or be joined by other players
+inviteParams - these will be passed to other players who accept an invitation, or join this player. Read more about the inviteParams in the room join listener section.
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+// the player joins a room
+window.CrazyGames.SDK.game.updateRoom({ roomId: "123eu" });
+
+// the room is now open, the current player can invite other players or be joined by other players
+// the inviteParams are just an example, you may have other parameters required to join a specific room
+window.CrazyGames.SDK.game.updateRoom({ isJoinable: true, inviteParams: { roomName: "123", region: "eu" }});
+
+// the room is full and no more players can join
+window.CrazyGames.SDK.game.updateRoom({ isJoinable: false});
+
+// the player left the room
+window.CrazyGames.SDK.game.leftRoom();
+
+// you can always mix more parameters, for example if the player joins a room and the room is already joinable
+window.CrazyGames.SDK.game.updateRoom({ roomId: "123eu", isJoinable: true, inviteParams: { roomName: "123", region: "eu" }});
+
+Room join listener
+When the user tries to join their friends via an invite notification, invite link or friends drawer, there are 2 possible scenarios:
+
+The user is already in game. In this case the room join listener will be triggered.
+The user is redirected to the game page, and the game has to load. Use the inviteParams in this case.
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+// don't forget to check window.CrazyGames.SDK.game.inviteParams on game start
+// if it is not null, your game was already started from an invite link, and you should send the player to the correct room
+
+function listener(inviteParams){
+    // send the user to the multiplayer room
+}
+
+// to add a listener
+window.CrazyGames.SDK.game.addJoinRoomListener(listener);
+
+// to remove a listener
+window.CrazyGames.SDK.game.removeJoinRoomListener(listener);
+
+Invite link
+This feature lets you share the CrazyGames version of your game to the players and invite them to join a multiplayer game. You can call inviteLink with a map of parameters that correspond to your game or game room. If your game only accepts players from the same region, you can add region as a parameter to the link. That way you can easily handle the scenario when users attempt to join from a different region.
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+const link = window.CrazyGames.SDK.game.inviteLink({
+    roomName: 12345,
+    param2: "value",
+    param3: "value",
+});
+console.log("Invite link", link);
+The invite link parameters can be retrieved with the help of the getInviteParam method, for example:
+// returns either a string or null if the parameter is missing
+window.CrazyGames.SDK.game.getInviteParam("roomName");
+You can also access all invite parameters like this:
+
+window.CrazyGames.SDK.game.inviteParams
+inviteParams is null if the game wasn't started from an invite link.
+
+Invite button
+Deprecated
+
+This feature is replaced by the Room Data functionality and will be deprecated.
+
+This feature indicates that the user is in a multiplayer room and can be joined.
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+const link = window.CrazyGames.SDK.game.showInviteButton({
+    roomName: 12345,
+    param2: "value",
+    param3: "value",
+});
+// the returned link looks the same as the link
+// returned by the inviteLink method
+console.log("Invite button link", link);
+Make sure to hide the invite button when the user can't be joined anymore (e.g. the room is full, the game has started or the lobby was canceled).
+
+window.CrazyGames.SDK.game.hideInviteButton();
+
+
+User
+The user module provides various account functionality that you can use to authenticate a user in your game. This means that the CrazyGames players who are logged in on the platform will be able to play games that require a user account without having to register in the game. They will also be logged in automatically in the game on other devices where they use the same CrazyGames account.
+
+The account integration page already familiarized you with the possible user integration scenarios. For the scenarios where authentication is available, please consult the appropriate link below.
+
+Getting started
+After reading our SDK Introduction page for your engine, the user module can be accessed like this:
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+window.CrazyGames.SDK.user;
+
+Check availability
+Basic Implementation Full Implementation
+
+The user account functionality is not available on other domains that embed your CrazyGames game. Before using any user account features, you should always ensure that the user account system is available.
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+const available = window.CrazyGames.SDK.user.isUserAccountAvailable;
+console.log("User account system available", available);
+
+Get current user
+Basic Implementation Full Implementation
+
+You can retrieve the user currently logged in CrazyGames with the following method:
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+const user = await window.CrazyGames.SDK.user.getUser();
+console.log("Get user result", user);
+
+If the user is not logged in CrazyGames, the returned user will be null
+
+User ID
+
+The user ID __dangerousUserId should not be used for authentication. Anyone can easily inject malicious code in the browser, including user IDs, and gain access to other user accounts. For authentication, please use the user token.
+
+The returned user object will look like this:
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+{
+    "__dangerousUserId": "GAR5irLOPebfbol3QXww2WL1Ja61",
+    "username": "SingingCheese.TLNU", // 6-20 chars (alfanumeric, period, underscores)
+    "profilePictureUrl": "https://images.crazygames.com/userportal/avatars/4.png"
+}
+
+CrazyGames usernames are 6-20 characters and can contain letters, numbers, period and underscore.
+
+System info
+Basic Implementation Full Implementation
+
+System info can be retrieved like this:
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+const systemInfo = window.CrazyGames.SDK.user.systemInfo;
+
+The response will look like this:
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+{
+    "countryCode": "US",
+    "locale": "en-US",
+    "device": {
+        // possible values: "desktop", "tablet", "mobile"
+        "type": "desktop"
+    },
+    "os": {
+        //Format cfr. [ua-parser-js](https://github.com/faisalman/ua-parser-js){target=\_blank}
+        "name": "Windows",
+        "version": "10"
+    },
+    "browser": {
+        //Format cfr. [ua-parser-js](https://github.com/faisalman/ua-parser-js){target=\_blank}
+        "name": "Chrome",
+        "version": "107.0.0.0"
+    },
+    "applicationType": "web" // possible values: "google_play_store", "apple_store", "pwa", "web"
+}
+
+Warning
+
+If you want to automatically set the language of the game based on user location, please use the locale field for this.
+
+Get friends
+Basic Implementation Full Implementation
+
+You can retrieve current user's friends like this:
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+try {
+    const friendsPage = await window.CrazyGames.SDK.user.listFriends({page: 1, size: 10}); // page starts at 1, max size is 50
+    console.log("List friends result", friendsPage);
+} catch (e) {
+    console.log("Error:", e);
+}
+
+The response will look like this:
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+{
+    "friends": [
+        {
+            "id": "Uvqz2K6p7qOG9BMW0gW3Lso6lC02",
+            "username": "SunMedusa.cWV0",
+            "profilePictureUrl": "https://images.crazygames.com/userportal/avatars/16.png",
+        }
+    ],
+    "page": 1,
+    "size": 10,
+    "hasMore": false,
+    "total": 1
+}
+
+The following error codes can be returned:
+
+userNotAuthenticated - the user is not logged in CrazyGames
+rateLimited - method calls are limited every 250ms
+requestInProgress - only one active call is allowed
+unexpectedError
+Get user token
+Basic Implementation Full Implementation
+
+The user token contains the userId of the player that is currently logged in CrazyGames, as well as other useful information (username, profilePictureUrl, etc). You should send it to your server when required, and verify/decode it there to extract the userId. This is useful for linking the user accounts for example, where you can have a column "crazyGamesId" in your user table that will be populated with the user id from the token.
+
+You can retrieve the user token with the following method:
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+try {
+    const token = await window.CrazyGames.SDK.user.getUserToken();
+    console.log("Get token result", token);
+} catch (e) {
+    console.log("Error:", e);
+}
+
+The token has a lifetime of 1 hour. The method will handle the token refresh. We recommend that you don't store the token, and always call this method when the token is required.
+
+The following error codes can be returned:
+
+userNotAuthenticated - the user is not logged in CrazyGames
+unexpectedError
+The returned token can be decoded for testing purposes on jwt.io.
+
+The token payload will contain the following data:
+
+{
+    "userId": "UOuZBKgjwpY9k4TSBB2NPugbsHD3",
+    "gameId": "20267",
+    "username": "RustyCake.ZU9H", // 6-20 chars (alfanumeric, period, underscores)
+    "profilePictureUrl": "https://images.crazygames.com/userportal/avatars/16.png",
+    "iat": 1670328680,
+    "exp": 1670332280
+}
+Do not decrypt tokens on the client
+
+Make sure not to decrypt the user token on client-side as this is insecure. The typical info you need on the front-end (username, avatar) can easily be obtained by using the getUser method.
+
+When you need to authenticate the requests with your server, you should send the token together with the requests.
+
+The token can be verified with the public key hosted at this URL. We recommend that you fetch the key every time you verify the token, since it may change. Alternatively, you can implement a caching mechanism, and re-fetch it when the token fails to decode due to a possible key change.
+
+Below is a TypeScript example that will help you decode and verify the token:
+
+import * as jwt from "jsonwebtoken";
+import axios from "axios";
+
+export interface CrazyTokenPayload {
+    userId: string;
+    gameId: string;
+    username: string; // 6-20 chars (alfanumeric, period, underscores)
+    profilePictureUrl: string;
+}
+
+export const DecodeCGToken = async (
+    token: string,
+): Promise<CrazyTokenPayload> => {
+    let key = "";
+
+    try {
+        const resp = await axios.get(
+            "https://sdk.crazygames.com/publicKey.json",
+        );
+        key = resp.data["publicKey"];
+    } catch (e) {
+        console.error("Failed to fetch CrazyGames public key", e);
+    }
+
+    if (!key) {
+        throw new Error("Key is empty when decoding CrazyGames token");
+    }
+
+    const payload = jwt.verify(token, key, { algorithms: ["RS256"] });
+    return payload as CrazyTokenPayload;
+};
+Auth prompt
+Basic Implementation Full Implementation
+
+By calling this method, the log in or register popup will be displayed on CrazyGames. The user can log in their existing account, or create a new account. The method returns the user object.
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+try {
+    const user = await window.CrazyGames.SDK.user.showAuthPrompt();
+    console.log("Auth prompt result", user);
+} catch (e) {
+    console.log("Error:", e);
+}
+
+The following errors can be returned:
+
+showAuthPromptInProgress - an auth prompt is already opened on the website
+userAlreadySignedIn - the user is already logged in
+userCancelled - the user closed the auth prompt without logging in or registering
+Auth listener
+Guideline
+
+You can register user auth listeners that are triggered when the player logs in CrazyGames. A log out doesn't trigger the auth listeners, since the entire page is refreshed when the player logs out.
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+const listener = (user) => console.log("User changed", user);
+
+// to add a listener
+window.CrazyGames.SDK.user.addAuthListener(listener);
+
+// to remove a listener
+window.CrazyGames.SDK.user.removeAuthListener(listener);
+
+After detecting a login using the Auth Listener, if you use the CrazyGames account as an identifier you should fetch the user's progress from your back-end.
+
+If you rely on the data module or automatic progress save, our system automatically reloads the game in case of a login.
+
+Account link prompt
+Guideline
+
+If you'd like to support advanced account use cases, you'll need to handle account linking between the CrazyGames account and the other providers. Check User linking page to find out more about user account linking.
+
+For requesting the user's permission to link their CrazyGames account to the in-game account, please use the provided account link modal and avoid implementing it yourself. This provides the players with a standard modal.
+
+Account link modal
+
+You can display the modal by calling the following method:
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+try {
+    const response = await window.CrazyGames.SDK.user.showAccountLinkPrompt();
+    console.log("Link account response", response);
+} catch (e) {
+    console.log("Error:", e);
+}
+The response object will be either { "response": "yes" } or { "response": "no" }
+
+
+The following error codes can be returned:
+
+showAccountLinkPromptInProgress - the link account modal is already displayed
+userNotAuthenticated - the user is not logged in CrazyGames
+Local Testing
+Basic Implementation Full Implementation
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+When the SDK is in the local environment (on 127.0.0.1 or localhost) it will return some hardcoded default values for the method calls in the user module.
+
+You can customize the returned local values by appending these query parameters:
+
+?user_account_available=false will change the response from the isUserAccountAvailable property to false (it returns true by default).
+?show_auth_prompt_response= will change the response from the showAuthPrompt method. It accepts the following values: user1, user2, user_cancelled
+?link_account_response= will change the response from the showAccountLinkPrompt method. It accepts the following values: yes, no, logged_out
+?user_response= will change the response from the getUser method. It accepts the following values: user1, user2, logged_out
+?token_response= will change the response from the getUserToken method. It accepts the following values: user1, user2, expired_token (to return an expired token), logged_out
+By default, getUser returns user1, getUserToken returns token for user1, showAccountLinkPrompt returns yes, showAuthPrompt returns user1, and isUserAccountAvailable returns true.
+
+Data
+The data module allows to save and retrieve user data for logged in CrazyGames users. The data will also be synced on all the devices where the user plays the game.
+
+If the user is not logged in, the data module will store the game data in LocalStorage. If the user logs in later, the LocalStorage game data will be synced and backed up on the user's account.
+
+Warning
+
+If you intend to use the data module, don't forget to select the appropriate Progress Save toggle in the submission flow. The data module will be disabled otherwise.
+
+You need to fully rely on the Data Module save (for both guest and logged-in users on CrazyGames) and avoid relying on local saves to ensure the Data Module save works correctly.
+
+Using the data module
+After reading our SDK Introduction page for your engine, follow these steps in order to use the data module.
+
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+Initialization
+
+Before using any methods from the data module, please be sure the SDK is initialized.
+
+await window.CrazyGames.SDK.init();
+We recommend that you do this during the loading screen of your game since the SDK preloads all the game data when it is initialized. This may take some time, depending on how much user data is stored.
+
+Usage
+
+The data module has the same API as the localStorage:
+
+clear(): void;
+getItem(key: string): string | null;
+removeItem(key: string): void;
+setItem(key: string, value: string): void;
+You can call methods from the data module like this:
+
+window.CrazyGames.SDK.data.setItem("gold", 100);
+
+Avoid losing user progress
+
+In general, it's a good practice to always retrieve your data before setting data to ensure that the player's previous progress isn't lost.
+
+Errors
+The data module can throw errors, for example:
+
+{
+    "code": "dataLimitExcedeed",
+    "message": "Game data when converted to a JSON string cannot exceed 1048576 bytes. Data was not saved"
+}
+Possible error codes:
+
+dataLimitExcedeed - you can store maximum 1MB of user data
+dataModuleDisabled - please be sure you selected the "Yes, using the Data Module from the CrazyGames SDK" option when submitting your game
+other
+Guest user behaviour
+For guest users, the data module stores the game data in localStorage. When a guest user signs in, you don't need to do anything. Our SDK will automatically load the account game data if there is any, or if this user hasn't played your game before, the SDK will transfer the guest data to the user account.
+
+When the user signs out, the SDK will revert back to using the guest game data.
+
+Data saving limits
+The SDK debounces data saving with 1 second, meaning that multiple calls to the methods will be saved after 1 second. There may be exceptions in various cases, when data saving may be debounced with more time, up to 30 seconds.
+
+There is a 1MB data limit. If you are approaching it, you will see warnings in the browser console. The data won't be backed up anymore if it exceeds 1MB.
+
+Help with the data module
+If you're unsure on how to use the data module to save & load progress data, refer to the localStorage API which works identically to the Data module.
+
+Integrating data module into already published games
+
+HTML5
+Unity
+GameMaker
+Construct
+Godot
+Cocos
+Since the data module offers the same API as window.localStorage, it is quite easy to integrate it into your already published games. To avoid players losing their data, you should copy all the existing localStorage keys into the data module if the user played your game before.
+
+Leaderboards
+Leaderboards allow players to compete globally, track their progress, and earn seasonal awards. Games with leaderboards enabled get additional visibility through a dedicated page in the sidebar, homepage carousels and widgets.
+
+Warning
+
+The leaderboard feature is only available for invited games.
+
+Warning
+
+Only one leaderboard per game is supported.
+
+Key Features:
+
+Weekly Seasons: Seasons run Monday to Monday, ending at 9:00 AM UTC with automatic score reset
+Multi-Tiered Rankings: Players can view their rank globally, by country, and among friends
+Seasonal Awards: Trophies awarded for top positions (1st, 2nd, 3rd) and top percentiles (1%, 5%, 10%)
+Flexible Configuration: Choose score type (points, time, XP, KDA), sorting direction, and whether scores are incremental
+Platform Integration: Leaderboard widgets appear on game pages and user profiles
+Platform Visibility
+The leaderboard system integrates seamlessly into the CrazyGames platform.
+
+
+Leaderboard Drawer
+Game Page Widget
+User Profile Awards
+Leaderboard Drawer
+
+
+Score Submission Approaches
+There are two ways to submit scores to a CrazyGames leaderboard:
+
+Client-side via the SDK — scores are submitted directly from the game client. No backend required, but scores can be manipulated since the client is not a trusted environment.
+Server-side via the API — scores are submitted from your backend server. Recommended if you have a server, as validation happens server-side and cannot be bypassed by the client.
+The configuration below reflects both approaches: the Encryption Key is used for client-side submissions, while the API Key is used for server-side submissions.
+
+Choose the integration guide that matches your setup:
+
+Client-only games — no backend server, submit scores directly from the game client using the SDK
+Games with a server — submit scores from your backend using the Leaderboard API
+Leaderboard Configuration
+These are the settings for the leaderboard in your game.
+
+Warning
+
+At least one between Encryption Key and API Key is required in your configuration. Encryption Key is used for submitting score via the SDK, while API Key is used for submitting scores via the API.
+
+Required parameters:
+
+Leaderboard Guide: A short text shown to players explaining how to get ranked in the CrazyGames leaderboards. Max length: 50 characters
+Indicates which mode, level, or game type the leaderboard refers to
+Explains what players need to do to compete or achieve a higher score
+Examples:
+"Endless Mode - Survive as long as possible"
+"Finish the race as fast as possible"
+Encryption Key (optional): 32-byte base64-encoded string (chosen by game developers)
+Used for client-side score encryption
+Same key across all environments
+Can be generated automatically on the Developer portal via a button next to the input field for it
+Example: "dGhpcyBpcyBhIDMyLWJ5dGUga2V5IGZvciB0ZXN0aW4="
+API Key (optional): 32-byte base64-encoded string (chosen by game developers)
+Required only for server-side score submission via the Leaderboard API
+Can be generated automatically on the Developer portal via a button next to the input field for it
+Example: "dGhpcyBpcyBhIDMyLWJ5dGUga2V5IGZvciB0ZXN0aW4="
+Metric Type: Defines what the score represents in the UI
+Options: 'XP' | 'KDA' | 'POINTS' | 'MINUTES'
+Determines leaderboard labeling
+Incremental Scoring: Boolean indicating if scores accumulate over time
+true - For incremental games where scores continuously grow
+false - For games with distinct play sessions
+Score Sorting: How scores are ranked
+"ASC" - Lower scores are better (i.e. best time)
+"DESC" - Higher scores are better (i.e. points)
+Min Allowed Score: Minimum valid score value (float)
+Scores below this threshold are rejected
+Example: 0.0 for games where negative scores aren't possible
+Max Allowed Score: Maximum valid score value (float)
+Scores above this threshold are rejected
+Example: 999999.0 for reasonable score caps
+Cooldown interval: Minimum amount of seconds between submitting scores for a user (int)
+Scores submitted within threshold are rejected
+Only applies to client-side submissions via the SDK — not enforced for backend submissions via the Leaderboard API
+Example: 10 for reasonable score pacing
+Example:
+
+{
+    "encryptionKey": "dGhpcyBpcyBhIDMyLWJ5dGUga2V5IGZvciB0ZXN0aW4=",
+    "apiKey": "sGrZXWMMtYZBoGHjD+YKJLg/9tlAso7R5iT3A2MOA24=",
+    "scoreLabel": "POINTS",
+    "scoreSorting": "DESC",
+    "minValue": 0.0,
+    "maxValue": 500000.0,
+    "cooldownSeconds": 10,
+    "isIncremental": false,
+}
+Note: The Leaderboard Guide is configured separately from the JSON above.
+
+Leaderboards SDK
+Score Reporting
+Start by encrypting the score. This is crucial to make it harder for hackers to tamper with your leaderboard.
+
+
+HTML5
+Unity
+Construct
+Cocos
+export async function encryptScore(score, encryptionKey) {
+    const iv = window.crypto.getRandomValues(new Uint8Array(12));
+    const algorithm = { name: 'AES-GCM', iv: iv };
+
+    const keyBytes = new Uint8Array(
+    atob(encryptionKey)
+    .split('')
+    .map((c) => c.charCodeAt(0)),
+    );
+
+    const cryptoKey = await window.crypto.subtle.importKey('raw', keyBytes, algorithm, false, ['encrypt']);
+
+    const dataBuffer = new TextEncoder().encode(score.toString());
+    const encryptedBuffer = await window.crypto.subtle.encrypt(algorithm, cryptoKey, dataBuffer);
+
+    const combined = new Uint8Array(iv.length + encryptedBuffer.byteLength);
+    combined.set(iv);
+    combined.set(new Uint8Array(encryptedBuffer), iv.length);
+
+    return btoa(String.fromCharCode(...combined));
+}
+
+Afterwards, submit the score. You need to pass both the encrypted and the plain score:
+
+
+HTML5
+Unity
+Construct
+Cocos
+const encryptionKey = 'your-32-byte-base64-key-here';
+
+// Encrypt the score
+const finalScore = 152.1;
+const encryptedScore = await encryptScore(finalScore, encryptionKey);
+
+// Submit the score
+CrazyGames.SDK.user.submitScore({
+    encryptedScore: encryptedScore,
+    score: finalScore,
+});
+
+Testing
+You can test your leaderboard integration in our preview tool on the Developer Portal.
+
+When your game submits a score, you'll see a submitScore message in the logs and in browser console.
+To avoid hacking, the server response is always successful and validation is applied in our back-end.
+Leaderboard QA Tool
+
+Leaderboards API
+Overview
+The Leaderboard API allows game developers to submit player scores directly from their backend servers to CrazyGames leaderboards. This is designed for games that need to validate scores server-side before submitting them.
+
+Key features:
+
+Authentication using API keys
+Batch score submissions (up to 100 scores per request)
+Higher rate limits compared to client-side submissions
+Partial success support (individual score failures don't block the entire batch)
+Detailed error responses with only failed scores returned, including the original score data
+Endpoint
+POST https://leaderboard.crazygames.com/leaderboard/scores
+Authentication
+Authentication is performed via an API key sent in the request header.
+
+Header
+Header	Required	Value
+X-API-Key	Yes	The game's API key
+Content-Type	Yes	application/json
+API Key Security
+
+The API key is unique to the game and can be found in the Developer Portal under the Leaderboard tab of your game (only visible for games with leaderboards enabled). Keep this key secret.
+
+Authentication Errors
+Status Code	Response	Description
+401 Unauthorized	{"error": "Unauthorized"}	Missing, invalid format, or unrecognized API key
+Rate Limiting
+The endpoint implements rate limiting to prevent abuse:
+
+Limit: 1000 requests per 60 seconds per API key
+Response: 429 Too Many Requests when limit is exceeded
+Request Format
+Body Structure
+The request body must be a JSON object containing a scores array. Maximum batch size is 100 scores per request.
+
+{
+  "scores": [
+    {
+      "userId": "string",
+      "score": number,
+      "timestamp": "ISO 8601 string (e.g., 2026-04-07T12:39:32.989Z)"
+    }
+  ]
+}
+Score Object Fields
+Field	Type	Required	Description
+userId	string	Yes	Unique identifier for the user (obtained by verifying and decoding the user token on your backend)
+score	number	Yes	The score value (must be a finite number)
+timestamp	string	Yes	ISO 8601 timestamp of when the score was achieved. Must include date, time, and timezone (e.g., 2026-04-07T12:39:32.989Z). Cannot be in the future.
+Response Format
+Response Status Codes
+Status	Condition
+200 OK	Scores were processed (check errors for individual failures)
+400 Bad Request	Request payload is invalid, or score format/timestamp validation failed
+{
+  "success": boolean,
+  "total": number,
+  "successCount": number,
+  "failureCount": number,
+  "errors": [
+    {
+      "score": object,
+      "type": "string"
+    }
+  ]
+}
+Response Fields
+Field	Type	Description
+success	boolean	true if all scores succeeded, false if any failures occurred
+total	number	Total number of scores processed
+successCount	number	Number of successfully submitted scores
+failureCount	number	Number of failed score submissions
+errors	array	Array containing only the failed scores with their error details
+Error Object
+Field	Type	Description
+score	object	The original score object that was submitted, exactly as received
+type	string	The error type (see Error Types below)
+Error Types
+Type	Description
+no-active-season	No active leaderboard season for this game
+user-not-found	User ID does not exist in the system
+privacy-disabled	User has disabled leaderboards in their privacy settings
+validation	Score validation failed (score out of range, invalid timestamp, or invalid format)
+internal-server-error	Database or unknown internal error occurred
+Error Responses
+Status Code	Response Body	Description
+400 Bad Request	{"error": "Request body must contain a scores array"}	Missing scores field
+400 Bad Request	{"error": "Scores must be an array"}	Scores field is not an array
+400 Bad Request	{"error": "Scores must be a non-empty array"}	Empty scores array
+400 Bad Request	{"error": "Batch size must not exceed 100 scores"}	Batch size exceeds maximum limit of 100
+400 Bad Request	Standard response with errors array	Some scores failed format/timestamp validation (entire batch rejected)
+401 Unauthorized	{"error": "Unauthorized"}	Missing or invalid API key
+429 Too Many Requests	{"error": "Too Many Requests"}	Rate limit exceeded. The Retry-After response header contains the number of seconds to wait before retrying
+500 Internal Server Error	{"error": "Internal Server Error"}	Unexpected server error
+Example Requests
+Batch Score Submission
+
+cURL
+JavaScript
+curl -X POST https://leaderboard.crazygames.com/leaderboard/scores \
+  -H "X-API-Key: api-key-here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "scores": [
+      {
+        "userId": "user123",
+        "score": 1500,
+        "timestamp": "2026-03-25T10:30:00.000Z"
+      },
+      {
+        "userId": "user456",
+        "score": 2000,
+        "timestamp": "2026-03-25T10:31:00.000Z"
+      },
+      {
+        "userId": "user789",
+        "score": 1750,
+        "timestamp": "2026-03-25T10:32:00.000Z"
+      }
+    ]
+  }'
+
+Success Response Example (200 OK)
+When all scores succeed:
+
+{
+  "success": true,
+  "total": 3,
+  "successCount": 3,
+  "failureCount": 0,
+  "errors": []
+}
+Partial Success Response Example (200 OK)
+When some scores fail to be processed (e.g. user-not-found) but others succeed:
+
+{
+  "success": false,
+  "total": 3,
+  "successCount": 2,
+  "failureCount": 1,
+  "errors": [
+    {
+      "score": {
+        "userId": "user456",
+        "score": 2000,
+        "timestamp": "2026-03-25T10:31:00.000Z"
+      },
+      "type": "user-not-found"
+    }
+  ]
+}
+Validation errors abort the entire batch
+
+If any score in the batch fails format or timestamp validation (invalid field types, missing fields, future timestamp), the entire batch is rejected, no scores are processed and successCount will be 0.
+
+In this case failureCount reflects the total number of scores submitted (the entire batch), while errors contains only the scores that failed validation (not the valid scores that were collaterally rejected). Fix the validation errors in errors, then re-submit the entire original batch.
+
+Non-validation errors (user-not-found, privacy-disabled, no-active-season) are per-score and allow partial success.
+
+All Failures Response Example (200 OK)
+When all scores fail due to per-score errors:
+
+{
+  "success": false,
+  "total": 3,
+  "successCount": 0,
+  "failureCount": 3,
+  "errors": [
+    {
+      "score": {
+        "userId": "user123",
+        "score": 1500,
+        "timestamp": "2026-03-25T10:30:00.000Z"
+      },
+      "type": "no-active-season"
+    },
+    {
+      "score": {
+        "userId": "user456",
+        "score": 2000,
+        "timestamp": "2026-03-25T10:31:00.000Z"
+      },
+      "type": "user-not-found"
+    },
+    {
+      "score": {
+        "userId": "user789",
+        "score": 1750,
+        "timestamp": "2026-03-25T10:32:00.000Z"
+      },
+      "type": "privacy-disabled"
+    }
+  ]
+}
+Best Practices
+1. Batch Multiple Scores
+For better performance, submit multiple scores in a single request when possible. Note that the maximum batch size is 100 scores per request.
+
+const scores = [
+  { userId: 'user123', score: 1500, timestamp: '2026-03-25T10:30:00.000Z' },
+  { userId: 'user456', score: 2000, timestamp: '2026-03-25T10:31:00.000Z' },
+  // ...
+];
+
+// If you have more than 100 scores, split them into chunks
+const BATCH_SIZE = 100;
+for (let i = 0; i < scores.length; i += BATCH_SIZE) {
+  const batch = scores.slice(i, i + BATCH_SIZE);
+  await submitScores({ scores: batch });
+}
+2. Handle Partial Failures
+Always check the errors array in the response:
+
+const response = await submitScores({ scores });
+
+if (!response.success || response.errors.length > 0) {
+  // some scores failed
+  response.errors.forEach(error => {
+    console.error(`Score submission failed:`, {
+      userId: error.score.userId,
+      score: error.score.score,
+      errorType: error.type
+    });
+  });
+}
+3. Respect Rate Limits
+Implement exponential backoff when receiving 429 responses:
+
+async function submitWithRetry(scores, maxRetries = 3) {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      return await submitScores({ scores });
+    } catch (error) {
+      if (error.response?.status === 429 && attempt < maxRetries - 1) {
+        const retryAfter = parseInt(error.response.headers['retry-after']) || 60;
+        await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
+      } else {
+        throw error;
+      }
+    }
+  }
+}
+4. Validate Scores Before Submission
+Ensure scores meet the game's leaderboard configuration (min/max values) before submitting:
+
+function isValidScore(score, minScore, maxScore) {
+  return Number.isFinite(score) && score >= minScore && score <= maxScore;
+}
+
+const validScores = allScores.filter(s =>
+  isValidScore(s.score, 0, 999999)
+);
+5. Use Accurate Timestamps
+Always use the actual timestamp when the score was achieved and not when you're submitting it, as we use it to sort rankings:
+
+// when score is achieved
+const scoreData = {
+  userId: user.id,
+  score: finalScore,
+  timestamp: new Date().toISOString()
+};
+
+// later, when submitting (timestamp remains unchanged)
+await submitScores({ scores: [scoreData] });
+Complete Implementation Example
+Here's a complete implementation example with error handling and best practices:
+
+const axios = require('axios');
+
+class CrazyGamesScoreAPI {
+  constructor(apiKey, options = {}) {
+    this.apiKey = apiKey;
+    this.baseURL = options.baseURL || 'https://userportal.crazygames.com';
+    this.maxRetries = options.maxRetries || 3;
+    this.maxBatchSize = 100; // Maximum batch size enforced by the API
+  }
+
+  async submitScores(scores) {
+    try {
+      const response = await axios.post(
+        `${this.baseURL}/leaderboard/scores`,
+        { scores },
+        {
+          headers: {
+            'X-API-Key': this.apiKey,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 400 && error.response.data?.errors) {
+          return error.response.data;
+        }
+        switch (error.response.status) {
+          case 401:
+            throw new Error('Invalid API key');
+          case 429: {
+            const retryAfter = parseInt(error.response.headers['retry-after']) || 60;
+            const rateLimitError = new Error('Rate limit exceeded');
+            rateLimitError.retryAfter = retryAfter;
+            throw rateLimitError;
+          }
+          case 400:
+            throw new Error(`Bad request: ${error.response.data.error}`);
+          default:
+            throw new Error(`API error: ${error.response.status}`);
+        }
+      }
+      throw error;
+    }
+  }
+
+  async submitScoresWithRetry(scores) {
+    for (let attempt = 0; attempt < this.maxRetries; attempt++) {
+      try {
+        return await this.submitScores(scores);
+      } catch (error) {
+        if (error.message === 'Rate limit exceeded' && attempt < this.maxRetries - 1) {
+          const delay = (error.retryAfter || 60) * 1000;
+          await new Promise(resolve => setTimeout(resolve, delay));
+        } else {
+          throw error;
+        }
+      }
+    }
+  }
+
+  async submitSingleScore(userId, score, timestamp = new Date().toISOString()) {
+    return this.submitScores([{
+      userId,
+      score,
+      timestamp
+    }]);
+  }
+
+  async submitLargeBatch(scores) {
+    const results = [];
+
+    // Split into chunks of maxBatchSize
+    for (let i = 0; i < scores.length; i += this.maxBatchSize) {
+      const batch = scores.slice(i, i + this.maxBatchSize);
+      const batchResult = await this.submitScoresWithRetry(batch);
+      results.push(batchResult);
+    }
+
+    // Combine results
+    return {
+      success: results.every(r => r.success),
+      total: results.reduce((sum, r) => sum + r.total, 0),
+      successCount: results.reduce((sum, r) => sum + r.successCount, 0),
+      failureCount: results.reduce((sum, r) => sum + r.failureCount, 0),
+      errors: results.flatMap(r => r.errors)
+    };
+  }
+
+  validateScore(score, minScore, maxScore) {
+    return Number.isFinite(score) && score >= minScore && score <= maxScore;
+  }
+}
+
+// usage
+const api = new CrazyGamesScoreAPI('api-key');
+
+// submit single score
+try {
+  const result = await api.submitSingleScore('user123', 1500);
+  console.log('Score submitted:', result);
+} catch (error) {
+  console.error('Failed to submit score:', error.message);
+}
+
+// submit batch with retry
+try {
+  const batchResult = await api.submitScoresWithRetry([
+    { userId: 'user1', score: 100, timestamp: new Date().toISOString() },
+    { userId: 'user2', score: 200, timestamp: new Date().toISOString() },
+    { userId: 'user3', score: 300, timestamp: new Date().toISOString() }
+  ]);
+
+  if (!batchResult.success) {
+    console.warn(`${batchResult.failureCount} scores failed`);
+    batchResult.errors.forEach(error => {
+      console.error(`Failed: ${error.score.userId} - ${error.type}`);
+    });
+  }
+} catch (error) {
+  console.error('Failed to submit batch:', error.message);
+}
+
+// submit large batch (automatically splits into chunks of 100)
+try {
+  const largeScoreArray = [
+    { userId: 'user1', score: 1500, timestamp: '2026-03-25T10:30:00.000Z' },
+    { userId: 'user2', score: 2000, timestamp: '2026-03-25T10:31:00.000Z' },
+    // ... 250 scores total
+  ];
+
+  const result = await api.submitLargeBatch(largeScoreArray);
+  console.log(`Submitted ${result.total} scores: ${result.successCount} succeeded, ${result.failureCount} failed`);
+} catch (error) {
+  console.error('Failed to submit large batch:', error.message);
+}
+Troubleshooting
+Getting 401 Unauthorized
+Possible causes:
+
+Missing X-API-Key header
+Invalid API key format
+API key not associated with any game
+Solution: Verify the API key is correct and properly set in the request header.
+
+Scores failing with validation errors
+Possible causes:
+
+Scores have invalid field types or values
+Missing required fields (userId, score, timestamp)
+Invalid timestamp format
+Solution: Check the errors array in the response to see exactly which scores failed and why. Each error object contains the original score data and the error type to help you identify and fix the issues.
+
+Scores failing with "user-not-found" error
+Possible cause: The userId provided does not exist in the CrazyGames system
+
+Solution: Ensure you're using the correct user ID obtained from the user token.
+
+Scores showing as failed with "validation" error
+Possible causes:
+
+Score values exceed the minimum or maximum values configured for the leaderboard
+Invalid timestamp format
+Solution: Check the leaderboard configuration in the developer portal and ensure scores fall within the allowed range. Verify that timestamps are valid.
+
+Getting 429 Too Many Requests
+Possible cause: Exceeding rate limit of 1000 requests per 60 seconds
+
+Solution: Implement batching to reduce request frequency and add retry logic with exponential backoff.
+
+Scores not appearing on leaderboard
+Possible causes:
+
+No active season configured for the game (no-active-season error)
+User ID does not exist (user-not-found error)
+User has disabled leaderboards in their settings (privacy-disabled error)
+Score failed validation (validation error)
+Internal server error occurred (internal-server-error)
+Solution: Check the response errors array for specific error details for each failed score submission.
+
+Getting 400 Bad Request - "Batch size must not exceed 100 scores"
+Possible cause: Attempting to submit more than 100 scores in a single request
+
+Solution: Split the scores into batches of 100 or fewer. Use the submitLargeBatch method from the implementation example above to automatically handle large batches by splitting them into chunks.
+
+Sitelock
+Sitelock helps prevent your HTML5 game from being copied and hosted on unauthorized websites.
+
+Protecting HTML5 games
+To prevent your game from being stolen by other websites, check whether the game is running on a crazygames.com domain. This is an example domain that should support loading the game: https://cubes-2048-io.game-files.crazygames.com/cubes-2048-io/13/index.html
+
+Your can use this function to ensure your game runs on valid CrazyGames domains.
+
+function isCrazyGames() {
+    const hostname = window.location.hostname;
+    return hostname === "crazygames.com" || hostname.endsWith(".crazygames.com");
+}
+If this check fails, you can show a message such as "Available only on CrazyGames" or render a blank screen.
+
+To improve sitelock robustness, you can obfuscate relevant parts of your game code with a tool like obfuscator.io.
+
+Protecting iframe games
+To prevent iframe embedding, configure the CSP header: Content-Security-Policy: frame-ancestors [...]
+
+If you submit your game as an iframe game, keep in mind that your game is embedded from more than one CrazyGames origin. You must whitelist all supported CrazyGames domains:
+
+// General
+*.crazygames.com
+
+// video ads run on
+games.crazygames.com
+
+// our iOS and Android apps, mind the scheme on iOS
+https://app.crazygames.com
+capacitor://app.crazygames.com
+
+//deprecated domains (no longer need whitelisting)
+www.crazygames.com
+de.crazygames.com
+it.crazygames.com
+vn.crazygames.com
+gr.crazygames.com
+ar.crazygames.com
+th.crazygames.com
+
+www.crazygames.fr
+www.crazygames.co.id
+www.crazygames.cz
+www.crazygames.dk
+www.crazygames.hu
+www.crazygames.nl
+www.crazygames.no
+www.crazygames.pl
+www.crazygames.com.br
+www.crazygames.ro
+www.crazygames.fi
+www.crazygames.se
+www.crazygames.ru
+www.crazygames.com.ua
+www.crazygames.at
+www.crazygames.jp
+www.crazygames.pt
+www.crazygames.vn
+www.crazygames.com.vn
+www.crazygames.co.kr
+
+www.1001juegos.com
+tr.crazygames.com
+Sitelock in the CrazyGames App
+Players also play your game in our iOS and Android apps. Both are native WebViews that run the CrazyGames portal from a local copy of the site, so the page embedding your game is not www.crazygames.com there:
+
+App	Origin of the page embedding your game
+iOS	capacitor://app.crazygames.com
+Android	https://app.crazygames.com
+iOS reserves the https scheme for the network and does not let a WebView serve local content over it, which is why the origin of our iOS app uses the capacitor scheme.
+
+A bare host in frame-ancestors means https only
+
+Entries such as *.crazygames.com inherit the scheme of the document that served the policy, so in a policy delivered over https they allow https ancestors only. The host of our iOS app matches, its scheme does not, and WebKit refuses to render your game. Players see a white screen: no JavaScript error is thrown, the block is only reported as a CSP violation in the console.
+
+This policy works on the web and in the Android app, but shows a white screen in the iOS app:
+
+Content-Security-Policy: frame-ancestors 'self' *.crazygames.com;
+Listing the app origins explicitly fixes it:
+
+Content-Security-Policy: frame-ancestors 'self' *.crazygames.com https://app.crazygames.com capacitor://app.crazygames.com;
+Two more things to keep in mind:
+
+frame-ancestors is checked against every ancestor of your game, not only its direct parent. In the apps, your game is embedded by our game frame on games.crazygames.com, which is itself embedded by the app, so both origins have to be allowed.
+The isCrazyGames check above keeps working in the apps, but if your sitelock checks the embedder (document.referrer, location.ancestorOrigins) instead of its own location, apply the same rule there: compare the host and don't require the https scheme.
+
+Common fixes
+The snippet below addresses common UX issues caused by default browser behavior:
+
+Unwanted page scroll
+Unwanted key events
+Visibility changes on Samsung App
+Context menu appearing outside the Unity canvas
+// Disable unwanted page scroll.
+window.addEventListener("wheel", (event) => event.preventDefault(), {
+    passive: false,
+});
+
+// Disable unwanted key events and spacebar scrolling.
+window.addEventListener("keydown", (event) => {
+    if (["ArrowUp", "ArrowDown", ""].includes(event.key)) {
+        event.preventDefault();
+    }
+});
+
+// Fix visibility change handling on webview (reported on Samsung App).
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState) {
+        if (document.visibilityState === "hidden") {
+            application.publishEvent("OnWebDocumentPause", "True");
+        } else if (document.visibilityState === "visible") {
+            application.publishEvent("OnWebDocumentPause", "False");
+        }
+    }
+});
+
+// Disable context menu after right click outside the canvas.
+document.addEventListener("contextmenu", (event) => event.preventDefault());
+

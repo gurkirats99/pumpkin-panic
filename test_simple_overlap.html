@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Arcade Container Overlap Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+</head>
+<body>
+    <div id="log" style="font-family: monospace; white-space: pre; font-size: 16px;"></div>
+    <script>
+        const log = (msg) => {
+            console.log(msg);
+            document.getElementById('log').innerText += msg + '\n';
+        };
+
+        const config = {
+            type: Phaser.HEADLESS,
+            physics: {
+                default: 'arcade'
+            },
+            scene: {
+                create() {
+                    const c1 = this.add.container(100, 100);
+                    this.physics.add.existing(c1);
+                    c1.body.setSize(50, 50);
+
+                    const s1 = this.physics.add.sprite(100, 100, null);
+                    s1.body.setSize(50, 50);
+
+                    log("Direct c1 vs s1 intersects: " + this.physics.world.intersects(c1.body, s1.body));
+
+                    let overlapDirect = false;
+                    this.physics.overlap(c1, s1, () => { overlapDirect = true; });
+                    log("this.physics.overlap(c1, s1): " + overlapDirect);
+
+                    const g1 = this.physics.add.group();
+                    g1.add(c1);
+
+                    const g2 = this.physics.add.group();
+                    g2.add(s1);
+
+                    let overlapGroups = false;
+                    this.physics.overlap(g1, g2, () => { overlapGroups = true; });
+                    log("this.physics.overlap(g1, g2): " + overlapGroups);
+
+                    let colliderOverlap = false;
+                    this.physics.add.overlap(g1, g2, () => { colliderOverlap = true; });
+                    this.physics.world.step(0.016);
+                    log("After physics.world.step(16ms) - colliderOverlap: " + colliderOverlap);
+
+                    log("c1.body details: w=" + c1.body.width + ", h=" + c1.body.height + ", x=" + c1.body.x + ", y=" + c1.body.y);
+                    log("s1.body details: w=" + s1.body.width + ", h=" + s1.body.height + ", x=" + s1.body.x + ", y=" + s1.body.y);
+                }
+            }
+        };
+
+        new Phaser.Game(config);
+    </script>
+</body>
+</html>

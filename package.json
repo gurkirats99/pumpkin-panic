@@ -1,0 +1,23 @@
+{
+  "name": "pumpkin-panic-io",
+  "version": "1.0.0",
+  "description": "PUMPKIN PANIC.IO - Fast-paced top-down Halloween arena survival shooter built with Phaser 3",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve -l 3000 .",
+    "serve": "npx http-server -p 8080 .",
+    "dev": "npx serve -l 3000 .",
+    "build": "node build_client.js"
+  },
+  "keywords": [
+    "phaser3",
+    "html5-game",
+    "io-game",
+    "crazygames",
+    "survival",
+    "halloween",
+    "top-down-shooter"
+  ],
+  "author": "Pumpkin Panic Team",
+  "license": "MIT"
+}

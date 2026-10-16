@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Colyseus 0.15.24</title>
+    <script src="https://unpkg.com/colyseus.js@0.15.24/dist/colyseus.js"></script>
+</head>
+<body>
+    <div id="status">Testing Colyseus SDK...</div>
+    <div id="room-info"></div>
+    <script>
+        const statusDiv = document.getElementById('status');
+        const infoDiv = document.getElementById('room-info');
+
+        try {
+            if (typeof Colyseus === 'undefined') {
+                statusDiv.innerText = "FAILED: Colyseus is undefined!";
+            } else if (!Colyseus.Client) {
+                statusDiv.innerText = "FAILED: Colyseus.Client is undefined!";
+            } else {
+                statusDiv.innerText = "SUCCESS: Colyseus SDK loaded properly!";
+                const client = new Colyseus.Client('ws://localhost:2567');
+                statusDiv.innerText = "Colyseus.Client initialized! Connecting to room pumpkin_arena...";
+
+                client.joinOrCreate("pumpkin_arena", { name: "TestPlayer", skin: "classic" })
+                    .then(room => {
+                        statusDiv.innerText = "CONNECTED to room " + room.id + " with sessionId " + room.sessionId;
+                        infoDiv.innerHTML = "Room State: " + Object.keys(room.state).join(", ") + "<br>" +
+                                            "Players in state: " + (room.state.players ? room.state.players.size : 0);
+
+                        room.onStateChange((state) => {
+                            infoDiv.innerHTML = "Room State: " + Object.keys(state).join(", ") + "<br>" +
+                                                "Players in state: " + (state.players ? state.players.size : 0) + "<br>" +
+                                                "Storm Radius: " + (state.storm ? Math.round(state.storm.currentRadius) : 'N/A');
+                        });
+                    })
+                    .catch(err => {
+                        statusDiv.innerText = "CONNECT ERROR: " + err.message;
+                    });
+            }
+        } catch (e) {
+            statusDiv.innerText = "ERROR: " + e.message;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Phaser CDN Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+</head>
+<body>
+    <div id="status">Loading...</div>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const el = document.getElementById('status');
+            if (typeof Phaser !== 'undefined') {
+                el.innerText = 'Phaser loaded successfully: ' + Phaser.VERSION;
+            } else {
+                el.innerText = 'Phaser failed to load';
+            }
+        });
+    </script>
+</body>
+</html>

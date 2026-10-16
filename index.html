@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>PUMPKIN PANIC.IO - Halloween Arena Survival Shooter</title>
+    <meta name="description" content="Survive, grow, and dominate the pumpkin patch! Collect glowing seeds, fire pumpkin seeds, dodge the deadly pumpkin storm, and defeat rivals in PUMPKIN PANIC.IO.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- CrazyGames SDK v3 (Official) -->
+    <script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>
+    <!-- Phaser 3 Library -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+    <!-- Colyseus Multiplayer Client SDK (v0.15.24 standalone browser UMD) -->
+    <script src="https://unpkg.com/colyseus.js@0.15.24/dist/colyseus.js"></script>
+</head>
+<body>
+    <!-- HALLOWEEN GAME LOADING SCREEN -->
+    <div id="loading-screen" class="overlay-screen loading-overlay">
+        <div class="loading-card">
+            <div class="loading-pumpkin-glow">
+                <span class="carved-pumpkin-icon">🎃</span>
+            </div>
+            <h2 class="loading-title">PUMPKIN PANIC.IO</h2>
+            <div class="loading-tagline">SUMMONING HARVEST ARENA...</div>
+            <div class="loading-bar-wrapper">
+                <div id="loading-progress-bar" class="loading-progress-bar" style="width: 0%;"></div>
+            </div>
+            <div class="loading-info-row">
+                <span id="loading-status-text" class="loading-status">Carving Jack-o'-Lanterns...</span>
+                <span id="loading-pct-text" class="loading-pct">0%</span>
+            </div>
+            <div class="loading-tip-box">
+                <span class="tip-icon">💡</span>
+                <span id="loading-tip-text">Harvest glowing seeds to level up and dodge the purple shrinking storm!</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phaser 3 Canvas Mount Container -->
+    <div id="game-container"></div>
+
+    <!-- START SCREEN OVERLAY -->
+    <div id="start-screen" class="overlay-screen">
+        <div class="glass-panel main-menu-panel">
+            <!-- Header with Title & Live Coins Balance -->
+            <div class="menu-top-bar">
+                <div class="coin-balance-pill">
+                    <span class="coin-icon">🪙</span>
+                    <span id="menu-coins-amount" class="coin-count">100</span>
+                    <span class="coin-label">Coins</span>
+                </div>
+            </div>
+
+            <div class="game-title-container">
+                <h1 class="game-logo">PUMPKIN PANIC.IO</h1>
+                <p class="title-tagline">SURVIVE. GROW. DOMINATE.</p>
+            </div>
+
+            <!-- Nickname Input -->
+            <div class="input-wrapper">
+                <span class="input-icon">🎃</span>
+                <input type="text" id="player-name-input" class="pumpkin-input" placeholder="Enter pumpkin nickname..." maxlength="16" value="SpookyPumpkin">
+            </div>
+
+            <!-- Shop & Armory Tabs Navigation -->
+            <div class="shop-tabs-nav">
+                <button id="shop-tab-skins" class="shop-tab-btn active" type="button">
+                    <span class="tab-icon">🎃</span> SKINS VAULT (32)
+                </button>
+                <button id="shop-tab-guns" class="shop-tab-btn" type="button">
+                    <span class="tab-icon">🔫</span> WEAPON ARMORY (22)
+                </button>
+            </div>
+
+            <!-- Skin Vault & Shop Panel -->
+            <div id="skins-shop-panel" class="shop-tab-panel">
+                <div class="skin-section-header">
+                    <span class="skin-section-title">🎃 32 UNIQUE PUMPKIN SKINS</span>
+                    <span class="skin-section-hint">Earn coins to unlock Legendary & Mythic forms!</span>
+                </div>
+                <div id="skin-selector" class="skin-grid-container">
+                    <!-- Dynamically populated with 32 HD visual skin cards -->
+                </div>
+            </div>
+
+            <!-- Weapon Armory Shop Panel -->
+            <div id="guns-shop-panel" class="shop-tab-panel hidden">
+                <div class="skin-section-header">
+                    <span class="skin-section-title">🔫 22 DEADLY WEAPONS ARMORY</span>
+                    <span class="skin-section-hint">Equip powerful starting guns or buy with coins!</span>
+                </div>
+                <div id="gun-selector" class="skin-grid-container gun-grid-container">
+                    <!-- Dynamically populated with 22 weapon cards -->
+                </div>
+            </div>
+
+            <!-- Primary Play Action Buttons (Multiplayer & Local Practice) -->
+            <div class="play-action-column">
+                <button id="play-multiplayer-btn" class="btn-primary btn-online" type="button">
+                    🌐 PLAY ONLINE (MULTIPLAYER)
+                </button>
+                <button id="play-local-btn" class="btn-primary btn-practice" type="button">
+                    🎃 LOCAL PRACTICE (OFFLINE)
+                </button>
+            </div>
+
+            <!-- Secondary Actions -->
+            <div class="button-row">
+                <button id="how-to-play-btn" class="btn-secondary" type="button">📖 How to Play</button>
+                <button id="audio-toggle-btn" class="btn-secondary" type="button">🔊 Audio: ON</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MULTIPLAYER MATCHMAKING MODAL -->
+    <div id="multiplayer-modal" class="modal-screen hidden">
+        <div class="modal-card mp-modal-card">
+            <div class="modal-header-row">
+                <h3 class="modal-title" style="margin-bottom: 0;">🌐 MULTIPLAYER ARENA</h3>
+                <button id="close-multiplayer-btn" class="modal-close-icon" type="button">✖</button>
+            </div>
+
+            <!-- Server Connection Health Status -->
+            <div class="server-status-bar">
+                <div class="status-indicator-group">
+                    <span id="server-status-dot" class="status-dot dot-checking"></span>
+                    <span id="server-status-text" class="status-text">Checking server health...</span>
+                </div>
+                <button id="recheck-server-btn" class="btn-micro" type="button">🔄 Test Health</button>
+            </div>
+
+            <!-- Matchmaking Action Cards -->
+            <div class="mp-cards-grid">
+                <!-- Quick Play -->
+                <div class="mp-action-card">
+                    <div class="mp-card-top">
+                        <span class="mp-badge-icon">⚡</span>
+                        <div class="mp-card-title">Quick Match</div>
+                    </div>
+                    <p class="mp-card-desc">Instantly matchmake into an active pumpkin arena with real players.</p>
+                    <button id="mp-quick-play-btn" class="btn-mp-primary" type="button">QUICK PLAY 🚀</button>
+                </div>
+
+                <!-- Create Custom Room -->
+                <div class="mp-action-card">
+                    <div class="mp-card-top">
+                        <span class="mp-badge-icon">👑</span>
+                        <div class="mp-card-title">Create Arena</div>
+                    </div>
+                    <p class="mp-card-desc">Host a custom arena room and share your 6-letter room code with friends.</p>
+                    <button id="mp-create-room-btn" class="btn-mp-primary" type="button">CREATE ROOM 🎃</button>
+                </div>
+
+                <!-- Join By Code -->
+                <div class="mp-action-card">
+                    <div class="mp-card-top">
+                        <span class="mp-badge-icon">🔑</span>
+                        <div class="mp-card-title">Join Arena</div>
+                    </div>
+                    <p class="mp-card-desc">Enter a friend's room code to jump straight into their match.</p>
+                    <div class="room-code-box">
+                        <input type="text" id="mp-room-code-input" class="room-code-input" placeholder="ROOM CODE..." maxlength="12">
+                        <button id="mp-join-code-btn" class="btn-mp-primary" type="button">JOIN ARENA 🔑</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Server URL Settings Drawer -->
+            <div class="server-url-drawer">
+                <div class="drawer-header">
+                    <span>⚙️ Server Endpoint URL</span>
+                    <span class="drawer-sub">WebSocket (ws:// or wss://)</span>
+                </div>
+                <div class="url-input-row">
+                    <input type="text" id="server-url-input" class="url-field" placeholder="ws://localhost:2567">
+                    <button id="save-server-url-btn" class="btn-micro" type="button">Save</button>
+                    <button id="reset-server-url-btn" class="btn-micro" type="button">Default</button>
+                </div>
+            </div>
+
+            <!-- Offline Practice Mode Fallback -->
+            <div class="mp-fallback-box">
+                <button id="mp-fallback-local-btn" class="btn-secondary" style="width: 100%; padding: 10px;" type="button">
+                    🎃 Play Offline Local Practice Mode
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MULTIPLAYER LOBBY MODAL -->
+    <div id="multiplayer-lobby-modal" class="modal-screen hidden">
+        <div class="modal-card lobby-modal-card">
+            <!-- Header with Room Code and Controls -->
+            <div class="lobby-header">
+                <div class="lobby-title-group">
+                    <h3 class="modal-title" style="margin-bottom: 4px;">🎃 ARENA BATTLE LOBBY</h3>
+                    <div class="lobby-status-pill" id="lobby-status-pill">
+                        <span id="lobby-status-dot" class="status-dot dot-online"></span>
+                        <span id="lobby-status-text">WAITING FOR PLAYERS (1/16)</span>
+                    </div>
+                </div>
+                <button id="close-lobby-btn" class="modal-close-icon" type="button" title="Leave Lobby">✖</button>
+            </div>
+
+            <!-- Room Code & Invite Banner -->
+            <div class="lobby-invite-banner">
+                <div class="lobby-code-group">
+                    <span class="lobby-code-label">ROOM CODE:</span>
+                    <span id="lobby-room-code-display" class="lobby-room-code">------</span>
+                    <button id="lobby-copy-code-btn" class="btn-lobby-action" type="button" title="Copy Room Code">
+                        📋 Copy Code
+                    </button>
+                </div>
+                <div class="lobby-link-group">
+                    <button id="lobby-share-link-btn" class="btn-lobby-action btn-share-link" type="button" title="Copy Shareable Link">
+                        🔗 Share Invite Link
+                    </button>
+                    <span id="lobby-copy-feedback" class="copy-feedback-text"></span>
+                </div>
+            </div>
+
+            <!-- Connected Real Players Section -->
+            <div class="lobby-players-section">
+                <div class="lobby-section-header">
+                    <span class="section-title">👥 Connected Real Players (<span id="lobby-player-count">1</span>/<span id="lobby-max-players">16</span>)</span>
+                    <span id="lobby-bot-info-badge" class="lobby-bot-badge">🤖 15 Server Bots Queued</span>
+                </div>
+                <div id="lobby-players-list" class="lobby-players-grid">
+                    <!-- Dynamic player cards rendered here -->
+                </div>
+            </div>
+
+            <!-- Matchmaking & Countdown Banner -->
+            <div class="lobby-matchmaking-banner">
+                <div class="matchmaking-countdown-box">
+                    <span class="matchmaking-icon">⏱️</span>
+                    <div class="matchmaking-text-group">
+                        <div id="lobby-countdown-title" class="countdown-title">Matchmaking In Progress</div>
+                        <div id="lobby-countdown-desc" class="countdown-desc">Host can launch immediately or match auto-starts when timer expires. Empty slots will be filled with server-authoritative bots.</div>
+                    </div>
+                    <div id="lobby-countdown-timer" class="countdown-timer">15s</div>
+                </div>
+            </div>
+
+            <!-- Lobby Action Footer -->
+            <div class="lobby-footer">
+                <button id="lobby-start-btn" class="btn-primary btn-lobby-start" type="button">
+                    🚀 START MATCH NOW
+                </button>
+                <button id="lobby-leave-btn" class="btn-secondary btn-lobby-leave" type="button">
+                    ✖ Leave Arena
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MULTIPLAYER STATUS TOAST (Connecting, Searching, In Match, Reconnecting, Disconnected) -->
+    <div id="mp-status-toast" class="mp-status-toast hidden">
+        <div class="toast-dot-container">
+            <span id="toast-status-dot" class="status-dot dot-checking"></span>
+        </div>
+        <div class="toast-content">
+            <div id="toast-status-title" class="toast-title">Connecting...</div>
+            <div id="toast-status-desc" class="toast-desc">Establishing link with harvest arena</div>
+        </div>
+    </div>
+
+    <!-- INVITE DETECTED MODAL -->
+    <div id="invite-prompt-modal" class="modal-screen hidden">
+        <div class="modal-card invite-prompt-card">
+            <div class="modal-header-row">
+                <h3 class="modal-title">✉️ ARENA INVITATION</h3>
+            </div>
+            <p class="invite-modal-desc">You've been invited to join private room <strong id="invite-room-code-tag" class="invite-code-pill">CODE</strong>!</p>
+            <div class="invite-form-group">
+                <label for="invite-player-name">Your Player Name:</label>
+                <input type="text" id="invite-player-name" class="input-field" maxlength="16" placeholder="SpookyPumpkin">
+            </div>
+            <div class="button-row" style="margin-top: 20px;">
+                <button id="invite-join-btn" class="btn-primary" type="button">🎃 ACCEPT & JOIN ARENA</button>
+                <button id="invite-decline-btn" class="btn-secondary" type="button">Decline</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONNECTION ERROR MODAL -->
+    <div id="connection-error-modal" class="modal-screen hidden">
+        <div class="modal-card error-modal-card">
+            <h3 class="modal-title" style="color: #ef4444;">⚠️ CONNECTION NOTICE</h3>
+            <p id="connection-error-message" class="error-msg-text">Could not reach the multiplayer server.</p>
+            <div class="button-row" style="margin-top: 18px;">
+                <button id="error-fallback-local-btn" class="btn-primary" style="font-size: 16px; padding: 12px;" type="button">🎃 Play Local Practice</button>
+                <button id="error-close-btn" class="btn-secondary" type="button">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RECONNECTING MODAL -->
+    <div id="reconnecting-modal" class="modal-screen hidden">
+        <div class="modal-card reconnecting-card">
+            <div class="reconnect-radar-animation">
+                <span class="radar-ping"></span>
+                <span class="radar-icon">📡</span>
+            </div>
+            <h3 class="modal-title" style="color: #ffaa00;">RECONNECTING TO ARENA...</h3>
+            <p id="reconnecting-desc" class="reconnecting-desc">Connection dropped unexpectedly. Attempting to restore link with match...</p>
+            <div class="button-row" style="margin-top: 18px;">
+                <button id="reconnect-now-btn" class="btn-primary" style="font-size: 15px; padding: 12px;" type="button">🔄 Retry Connection</button>
+                <button id="reconnect-local-btn" class="btn-secondary" style="font-size: 14px;" type="button">🎃 Play Offline Practice</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HOW TO PLAY MODAL -->
+    <div id="how-to-play-modal" class="modal-screen hidden">
+        <div class="modal-card">
+            <h3 class="modal-title">📜 HOW TO SURVIVE & HARVEST</h3>
+            <div class="help-grid">
+                <div class="help-item">
+                    <span class="help-icon">🛡️</span>
+                    <div class="help-desc">
+                        <h4>4s Golden Spawn Shield</h4>
+                        <p>Every match grants a 4-second impenetrable golden shield. Harvest seeds and equip weapons safely without fear of instant defeat!</p>
+                    </div>
+                </div>
+                <div class="help-item">
+                    <span class="help-icon">🔫</span>
+                    <div class="help-desc">
+                        <h4>6 Weapon Mutations</h4>
+                        <p><b>💥 Buckshot Shotgun:</b> 5-pellet burst • <b>🔥 Soul Flamethrower:</b> Rapid ghostfire • <b>👻 Spectre Seeker:</b> Homing phantom seeds • <b>🌿 Triple Fan:</b> 3-way spread • <b>⚡ Rapid Fire:</b> High speed • <b>🔮 Ricochet:</b> Wall bounce!</p>
+                    </div>
+                </div>
+                <div class="help-item">
+                    <span class="help-icon">👑</span>
+                    <div class="help-desc">
+                        <h4>Golden Mega Pinata Gourd</h4>
+                        <p>Hunt the giant golden crowned gourd wandering the 5400x5400 map! Crack it open for a 16 super-seed jackpot explosion, bonus weapons, and +300 coins!</p>
+                    </div>
+                </div>
+                <div class="help-item">
+                    <span class="help-icon">⚡</span>
+                    <div class="help-desc">
+                        <h4>Killstreaks & Adrenaline</h4>
+                        <p>Chain eliminations for Double Harvest, Triple, Carnage, and Godlike coin jackpots! Under 30% HP, activate Adrenaline Rush with +16% escape speed.</p>
+                    </div>
+                </div>
+                <div class="help-item">
+                    <span class="help-icon">🗺️</span>
+                    <div class="help-desc">
+                        <h4>50-Combatant Arena & Storm</h4>
+                        <p>Survive against 49 fierce rivals in offline practice or online multiplayer. Keep inside the safe zone as the Purple Storm shrinks inward!</p>
+                    </div>
+                </div>
+            </div>
+            <button id="close-help-btn" class="btn-primary" style="font-size: 18px; padding: 12px;" type="button">
+                GOT IT, LET'S PLAY!
+            </button>
+        </div>
+    </div>
+
+    <!-- IN-GAME HUD -->
+    <div id="hud" class="hidden">
+        <!-- Top Left: Player Status & Room Code Pill -->
+        <div class="hud-player-card">
+            <div class="hud-header">
+                <span id="hud-player-name" class="hud-name">SpookyPumpkin</span>
+                <span id="hud-lvl-badge" class="hud-lvl">LVL 1</span>
+            </div>
+            <!-- Health Bar -->
+            <div class="bar-container">
+                <div id="hud-hp-fill" class="bar-fill hp-fill"></div>
+                <span id="hud-hp-text" class="bar-text">100 / 100</span>
+            </div>
+            <!-- XP Bar -->
+            <div class="bar-container">
+                <div id="hud-xp-fill" class="bar-fill xp-fill" style="width: 0%;"></div>
+                <span id="hud-xp-text" class="bar-text">XP: 0 / 40</span>
+            </div>
+            <!-- Room Code Indicator in Multiplayer -->
+            <div id="hud-room-pill" class="hud-room-code-tag hidden" title="Click to copy room code">
+                <span>🔑 Room:</span>
+                <span id="hud-room-code-text" class="room-code-val">PUMP77</span>
+                <span class="copy-lbl">📋</span>
+            </div>
+        </div>
+
+        <!-- Top Center: Match Stats -->
+        <div class="hud-center-stats">
+            <div class="hud-stat-pill">
+                <span>🎃 Alive:</span>
+                <span id="hud-alive-count" style="color: #ffaa00;">10 / 10</span>
+            </div>
+            <div class="hud-stat-pill">
+                <span>⏱️</span>
+                <span id="hud-timer">00:00</span>
+            </div>
+            <div class="hud-stat-pill coin-stat-pill">
+                <span>🪙</span>
+                <span id="hud-coins" style="color: #ffd700;">100</span>
+            </div>
+        </div>
+
+        <!-- Storm Alert Banner -->
+        <div id="storm-alert-banner" class="storm-banner hidden">
+            ⚠️ STORM SHRINKING IN 10s!
+        </div>
+
+        <!-- Elimination Kill Feed Announcement -->
+        <div id="elimination-announcement" class="elimination-banner hidden">
+            <span id="elim-killer" class="elim-killer">Killer</span>
+            <span class="elim-action">💥 harvested</span>
+            <span id="elim-victim" class="elim-victim">Victim</span>
+        </div>
+
+        <!-- Top Right: Live Leaderboard -->
+        <div class="hud-leaderboard">
+            <div class="lb-title">🏆 Top Harvesters</div>
+            <ul id="leaderboard-list" class="lb-list">
+                <!-- Populated dynamically -->
+            </ul>
+        </div>
+
+        <!-- Active Weapon Mutation HUD Widget -->
+        <div id="hud-weapon-badge" class="hud-weapon-badge hidden">
+            <span id="hud-weapon-icon" class="weapon-icon">⚡</span>
+            <div class="weapon-info">
+                <span id="hud-weapon-name" class="weapon-name">RAPID FIRE</span>
+                <div class="weapon-duration-bar">
+                    <div id="hud-weapon-duration-fill" class="weapon-duration-fill" style="width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Center: Kills Counter -->
+        <div class="hud-bottom-center">
+            <span>💀 Kills:</span>
+            <span id="hud-kills" style="color: #ff4d4d; font-weight: 800;">0</span>
+        </div>
+
+        <!-- Bottom Right: Circular Minimap -->
+        <div class="hud-minimap-wrapper">
+            <canvas id="minimap-canvas" width="140" height="140"></canvas>
+        </div>
+
+        <!-- Mobile Floating Virtual Joystick Base & Knob -->
+        <div id="virtual-joystick-base" class="virtual-joystick-base hidden">
+            <div id="virtual-joystick-knob" class="virtual-joystick-knob"></div>
+        </div>
+
+        <!-- Mobile Virtual Controls -->
+        <div id="mobile-controls" class="mobile-controls">
+            <button id="mobile-fire-btn" type="button">FIRE 🎃</button>
+        </div>
+    </div>
+
+    <!-- END SCREEN (VICTORY / DEFEAT) -->
+    <div id="end-screen" class="overlay-screen hidden">
+        <div class="glass-panel">
+            <h2 id="end-title" class="victory-text">👑 VICTORY ROYALE!</h2>
+            <p id="end-subtitle" class="end-subtitle">LAST PUMPKIN STANDING IN THE ARENA!</p>
+
+            <!-- Killer Attribution Card on Defeat -->
+            <div id="killer-card" class="killer-card hidden">
+                <span class="killer-card-label">💀 HARVESTED BY:</span>
+                <span id="killer-name" class="killer-card-name">JackO'Slasher [BOT]</span>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-label">Final Rank</div>
+                    <div id="stat-rank" class="stat-value">#1 / 10</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Harvested (Kills)</div>
+                    <div id="stat-kills" class="stat-value">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Time Survived</div>
+                    <div id="stat-time" class="stat-value">00:00</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Max Growth</div>
+                    <div id="stat-level" class="stat-value">LVL 1</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Coins Earned</div>
+                    <div id="stat-coins-earned" class="stat-value" style="color: #ffd700;">+0 🪙</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Total Score</div>
+                    <div id="stat-score" class="stat-value" style="color: #ffd700;">0</div>
+                </div>
+            </div>
+
+            <!-- CrazyGames Rewarded Bonus Option -->
+            <div id="rewarded-ad-container" class="rewarded-ad-box">
+                <button id="rewarded-coins-btn" class="btn-rewarded-ad" type="button">
+                    <span class="ad-badge">📺 BONUS</span>
+                    <span id="rewarded-ad-label">Watch Ad for +100 Coins 🪙</span>
+                </button>
+            </div>
+
+            <button id="play-again-btn" class="btn-primary" type="button">
+                PLAY AGAIN 🔄
+            </button>
+            <div class="quick-restart-hint">⚡ Press <b>SPACE</b> or <b>R</b> for instant rematch!</div>
+            <div class="button-row" style="margin-top: 8px;">
+                <button id="main-menu-btn" class="btn-secondary" type="button">Main Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Scripts (in dependency order) -->
+    <script src="src/config.js"></script>
+    <script src="src/platform/CrazyGamesAdapter.js"></script>
+    <script src="src/audio.js"></script>
+    <script src="src/network/NetworkAdapter.js"></script>
+    <script src="src/systems/EmitterManager.js"></script>
+    <script src="src/systems/StormSystem.js"></script>
+    <script src="src/systems/LeaderboardSystem.js"></script>
+    <script src="src/entities/Entity.js"></script>
+    <script src="src/entities/Player.js"></script>
+    <script src="src/entities/Bot.js"></script>
+    <script src="src/entities/BulletPool.js"></script>
+    <script src="src/entities/SeedManager.js"></script>
+    <script src="src/scenes/BootScene.js"></script>
+    <script src="src/scenes/GameScene.js"></script>
+    <script src="src/ui/UIManager.js"></script>
+    <script src="src/main.js"></script>
+</body>
+</html>

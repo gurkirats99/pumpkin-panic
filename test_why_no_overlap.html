@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Deep Overlap Debugger</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+    <script src="https://unpkg.com/colyseus.js@0.15.24/dist/colyseus.js"></script>
+
+    <script src="src/config.js"></script>
+    <script src="src/audio.js"></script>
+    <script src="src/entities/Entity.js"></script>
+    <script src="src/entities/Player.js"></script>
+    <script src="src/entities/Bot.js"></script>
+    <script src="src/entities/BulletPool.js"></script>
+    <script src="src/entities/SeedManager.js"></script>
+    <script src="src/systems/EmitterManager.js"></script>
+    <script src="src/systems/StormSystem.js"></script>
+    <script src="src/systems/LeaderboardSystem.js"></script>
+    <script src="src/network/NetworkAdapter.js"></script>
+    <script src="src/scenes/BootScene.js"></script>
+    <script src="src/scenes/GameScene.js"></script>
+</head>
+<body>
+    <div id="game-container"></div>
+    <div id="log" style="font-family: monospace; white-space: pre; font-size: 15px; background: #000; color: #fff;"></div>
+
+    <script>
+        const log = (msg) => {
+            console.log(msg);
+            document.getElementById('log').innerText += msg + '\n';
+        };
+
+        const config = {
+            type: Phaser.HEADLESS,
+            physics: {
+                default: 'arcade'
+            },
+            scene: [window.PumpkinPanic.BootScene, window.PumpkinPanic.GameScene]
+        };
+
+        const game = new Phaser.Game(config);
+
+        setTimeout(() => {
+            const scene = game.scene.getScene('GameScene');
+            scene.startMatch({ name: "Player1", skin: "classic", isMultiplayer: false });
+
+            const p = scene.player;
+            const seed = scene.seedManager.seedsGroup.getChildren().find(s => s.active);
+
+            log("1. Checking Groups:");
+            log("   entitiesGroup: isGroup=" + (scene.entitiesGroup instanceof Phaser.GameObjects.Group) + ", length=" + scene.entitiesGroup.getLength());
+            log("   entitiesGroup.contains(p): " + scene.entitiesGroup.contains(p));
+            log("   seedsGroup: isGroup=" + (scene.seedManager.seedsGroup instanceof Phaser.GameObjects.Group) + ", length=" + scene.seedManager.seedsGroup.getLength());
+            log("   seedsGroup.contains(seed): " + scene.seedManager.seedsGroup.contains(seed));
+
+            log("\n2. Checking Bodies:");
+            log("   p.body: type=" + p.body.constructor.name + ", enable=" + p.body.enable);
+            log("   seed.body: type=" + seed.body.constructor.name + ", enable=" + seed.body.enable);
+
+            log("\n3. Placing player on seed:");
+            p.x = seed.x;
+            p.y = seed.y;
+            p.body.reset(seed.x, seed.y);
+            log("   p: (" + p.x + ", " + p.y + "), p.body: (" + p.body.x + ", " + p.body.y + "), w=" + p.body.width + ", h=" + p.body.height);
+            log("   seed: (" + seed.x + ", " + seed.y + "), seed.body: (" + seed.body.x + ", " + seed.body.y + "), w=" + seed.body.width + ", h=" + seed.body.height);
+
+            log("\n4. Testing Direct Body Overlap:");
+            const bodyOverlap = scene.physics.world.overlap(p, seed);
+            log("   scene.physics.world.overlap(p, seed) = " + bodyOverlap);
+
+            log("\n5. Testing Group Overlap:");
+            const groupOverlap = scene.physics.world.overlap(scene.entitiesGroup, scene.seedManager.seedsGroup, (a, b) => {
+                log("   --> Callback fired with a=" + a.constructor.name + ", b=" + b.constructor.name);
+            });
+            log("   scene.physics.world.overlap(entitiesGroup, seedsGroup) = " + groupOverlap);
+
+            log("\n6. Testing Collider from scene.setupCollisions():");
+            // Find the collider registered for entitiesGroup and seedsGroup
+            const cList = scene.physics.world.colliders.getActive();
+            log("   Active colliders count: " + cList.length);
+            const seedCollider = cList.find(c => (c.object1 === scene.entitiesGroup && c.object2 === scene.seedManager.seedsGroup) || (c.object2 === scene.entitiesGroup && c.object1 === scene.seedManager.seedsGroup));
+            log("   Seed collider found: " + !!seedCollider);
+            if (seedCollider) {
+                log("   Seed collider active=" + seedCollider.active);
+            }
+        }, 1500);
+    </script>
+</body>
+</html>

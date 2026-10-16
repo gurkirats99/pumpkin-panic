@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gameplay Diagnostics</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+    <script src="https://unpkg.com/colyseus.js@0.15.24/dist/colyseus.js"></script>
+
+    <script src="src/config.js"></script>
+    <script src="src/audio.js"></script>
+    <script src="src/entities/Entity.js"></script>
+    <script src="src/entities/Player.js"></script>
+    <script src="src/entities/Bot.js"></script>
+    <script src="src/entities/BulletPool.js"></script>
+    <script src="src/entities/SeedManager.js"></script>
+    <script src="src/systems/EmitterManager.js"></script>
+    <script src="src/systems/StormSystem.js"></script>
+    <script src="src/systems/LeaderboardSystem.js"></script>
+    <script src="src/network/NetworkAdapter.js"></script>
+    <script src="src/scenes/BootScene.js"></script>
+    <script src="src/scenes/GameScene.js"></script>
+</head>
+<body>
+    <div id="game-container"></div>
+    <div id="report" style="font-family: monospace; white-space: pre; padding: 20px; font-size: 15px; background: #000; color: #39ff14;"></div>
+
+    <script>
+        const report = (msg) => {
+            console.log(msg);
+            document.getElementById('report').innerText += msg + '\n';
+        };
+
+        const config = {
+            type: Phaser.AUTO,
+            parent: 'game-container',
+            width: 800,
+            height: 600,
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: { x: 0, y: 0 },
+                    debug: false
+                }
+            },
+            scene: [window.PumpkinPanic.BootScene, window.PumpkinPanic.GameScene]
+        };
+
+        const game = new Phaser.Game(config);
+
+        setTimeout(() => {
+            const scene = game.scene.getScene('GameScene');
+            report("1. Starting Local Match...");
+            scene.startMatch({ name: "Player1", skin: "classic", isMultiplayer: false });
+
+            const p = scene.player;
+            report("2. Player spawned at: " + Math.round(p.x) + ", " + Math.round(p.y));
+            report("   Player body at: " + Math.round(p.body.x) + ", " + Math.round(p.body.y));
+            report("   Bots count: " + scene.bots.length);
+
+            // Hook seed collection
+            let seedsCollected = 0;
+            const origCollect = window.PumpkinPanic.SeedManager?.prototype?.initSeeds;
+            scene.seedManager.seedsGroup.children.iterate(s => {
+                const oldCol = s.collect;
+                s.collect = function(collector) {
+                    seedsCollected++;
+                    report(">> SEED COLLECTED! Total=" + seedsCollected + " by " + collector.name);
+                    return oldCol.apply(this, arguments);
+                };
+            });
+
+            // Find nearest seed and walk toward it using velocity
+            const seed = scene.seedManager.getNearestSeed(p.x, p.y, 1000);
+            report("3. Nearest Seed at: " + Math.round(seed.x) + ", " + Math.round(seed.y));
+
+            // Set player velocity toward seed
+            const angle = Phaser.Math.Angle.Between(p.x, p.y, seed.x, seed.y);
+            const speed = 250;
+            p.body.setVelocity(Math.cos(angle) * speed, Math.sin(angle) * speed);
+
+            // Simulate 60 physics steps of walking towards the seed
+            report("4. Walking towards seed for 60 frames...");
+            for (let f = 0; f < 60; f++) {
+                p.body.setVelocity(Math.cos(angle) * speed, Math.sin(angle) * speed);
+                scene.physics.world.step(0.016);
+                p.update(scene.time.now + f * 16, 16);
+            }
+
+            report("   Player after walking: " + Math.round(p.x) + ", " + Math.round(p.y));
+            report("   Player XP: " + p.xp + " | Seeds collected: " + seedsCollected);
+
+            // Now teleport right inside the seed bounds and step
+            report("5. Teleporting directly on top of seed (x=" + seed.x + ", y=" + seed.y + ")...");
+            p.x = seed.x;
+            p.y = seed.y;
+            p.body.x = seed.x - p.body.radius;
+            p.body.y = seed.y - p.body.radius;
+            scene.physics.world.step(0.016);
+            report("   Seeds collected after teleport: " + seedsCollected + " | Player XP: " + p.xp);
+
+            // Test bullet hit
+            const bot = scene.bots[0];
+            report("6. Testing Bullet vs Bot (" + bot.name + " at " + Math.round(bot.x) + ", " + Math.round(bot.y) + ", HP=" + bot.health + ")...");
+            const bul = scene.bulletPool.spawnBullet(bot.x, bot.y, 0, 25, p);
+            report("   Spawned bullet at (" + Math.round(bul.x) + ", " + Math.round(bul.y) + ")");
+            scene.physics.world.step(0.016);
+            report("   Bot HP after bullet step: " + bot.health);
+
+            // Test bot bullet vs player
+            report("7. Testing Bot Bullet vs Player (Player HP=" + p.health + ", isInvulnerable=" + p.isInvulnerable + ")...");
+            const botBul = scene.bulletPool.spawnBullet(p.x, p.y, 0, 25, bot);
+            scene.physics.world.step(0.016);
+            report("   Player HP after bot bullet step: " + p.health + ", isInvulnerable=" + p.isInvulnerable);
+        }, 1500);
+    </script>
+</body>
+</html>

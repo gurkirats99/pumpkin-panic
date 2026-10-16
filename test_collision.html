@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Collision Test 2</title>
+    <!-- Phaser 3 Library -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+    <script src="https://unpkg.com/colyseus.js@0.15.24/dist/colyseus.js"></script>
+
+    <!-- Game Scripts -->
+    <script src="src/config.js"></script>
+    <script src="src/audio.js"></script>
+    <script src="src/entities/Entity.js"></script>
+    <script src="src/entities/Player.js"></script>
+    <script src="src/entities/Bot.js"></script>
+    <script src="src/entities/BulletPool.js"></script>
+    <script src="src/entities/SeedManager.js"></script>
+    <script src="src/systems/EmitterManager.js"></script>
+    <script src="src/systems/StormSystem.js"></script>
+    <script src="src/systems/LeaderboardSystem.js"></script>
+    <script src="src/network/NetworkAdapter.js"></script>
+    <script src="src/scenes/BootScene.js"></script>
+    <script src="src/scenes/GameScene.js"></script>
+</head>
+<body>
+    <div id="game-container"></div>
+    <div id="log" style="font-family: monospace; white-space: pre; padding: 20px; font-size: 15px; background: #111; color: #0f0;"></div>
+
+    <script>
+        const log = (msg) => {
+            console.log(msg);
+            document.getElementById('log').innerText += msg + '\n';
+        };
+
+        const config = {
+            type: Phaser.AUTO,
+            parent: 'game-container',
+            width: 800,
+            height: 600,
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: { x: 0, y: 0 },
+                    debug: true
+                }
+            },
+            scene: [window.PumpkinPanic.BootScene, window.PumpkinPanic.GameScene]
+        };
+
+        const game = new Phaser.Game(config);
+
+        setTimeout(() => {
+            const scene = game.scene.getScene('GameScene');
+            scene.startMatch({ name: "Tester", skin: "classic", isMultiplayer: false });
+
+            const p = scene.player;
+            const seed = scene.seedManager.seedsGroup.getChildren().find(s => s.active);
+
+            log("--- BEFORE MOVE ---");
+            log("p.x=" + p.x + ", p.y=" + p.y + " | p.body.x=" + p.body.x + ", p.body.y=" + p.body.y);
+            log("seed.x=" + seed.x + ", seed.y=" + seed.y + " | seed.body.x=" + seed.body.x + ", seed.body.y=" + seed.body.y);
+
+            // Move player to seed
+            p.setPosition(seed.x, seed.y);
+            // Run physics update so body syncs with gameobject
+            scene.physics.world.postUpdate();
+
+            log("--- AFTER SETPOSITION & POSTUPDATE ---");
+            log("p.x=" + p.x + ", p.y=" + p.y + " | p.body.x=" + p.body.x + ", p.body.y=" + p.body.y);
+            log("p.body.left=" + p.body.left + ", right=" + p.body.right + ", top=" + p.body.top + ", bottom=" + p.body.bottom);
+            log("seed.body.left=" + seed.body.left + ", right=" + seed.body.right + ", top=" + seed.body.top + ", bottom=" + seed.body.bottom);
+            log("p.body.checkCollision.none=" + p.body.checkCollision.none);
+            log("seed.body.checkCollision.none=" + seed.body.checkCollision.none);
+
+            // Test intersects
+            const intersects = scene.physics.world.intersects(p.body, seed.body);
+            log("scene.physics.world.intersects(p.body, seed.body) = " + intersects);
+
+            let overlap1 = false;
+            scene.physics.overlap(p, seed, () => { overlap1 = true; });
+            log("scene.physics.overlap(p, seed) = " + overlap1);
+
+            let overlapGroup = false;
+            scene.physics.overlap(scene.entitiesGroup, scene.seedManager.seedsGroup, (e, s) => {
+                overlapGroup = true;
+                log("Overlap in group hit: e=" + e.constructor.name + " (" + e.name + "), s=" + s.constructor.name);
+            });
+            log("scene.physics.overlap(entitiesGroup, seedsGroup) = " + overlapGroup);
+
+            // Check if colliders in world are active
+            log("Registered Colliders count in scene: " + scene.physics.world.colliders.getActive().length);
+            scene.physics.world.colliders.getActive().forEach((c, idx) => {
+                log("Collider " + idx + ": active=" + c.active + ", obj1=" + c.object1.constructor.name + ", obj2=" + c.object2.constructor.name);
+            });
+        }, 1500);
+    </script>
+</body>
+</html>
