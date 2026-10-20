@@ -10,23 +10,23 @@
     class UIManager {
         constructor() {
             this.gameScene = null;
-            this.selectedSkin = localStorage.getItem('pumpkin_panic_skin') || 'classic';
-            this.playerName = localStorage.getItem('pumpkin_panic_name') || 'SpookyPumpkin';
+            this.selectedSkin = this.loadData('pumpkin_panic_skin', 'classic');
+            this.playerName = this.loadData('pumpkin_panic_name', 'SpookyPumpkin');
 
             // Coin Currency & Hard Progression Unlocks (v3)
-            if (localStorage.getItem('pumpkin_economy_v3') !== 'true') {
-                localStorage.setItem('pumpkin_economy_v3', 'true');
-                localStorage.setItem('pumpkin_coins', (Config.ECONOMY.STARTING_COINS || 25).toString());
-                localStorage.setItem('pumpkin_unlocked_skins', JSON.stringify(['classic']));
-                localStorage.setItem('pumpkin_panic_skin', 'classic');
+            if (this.loadData('pumpkin_economy_v3') !== 'true') {
+                this.saveData('pumpkin_economy_v3', 'true');
+                this.saveData('pumpkin_coins', (Config.ECONOMY.STARTING_COINS || 25).toString());
+                this.saveData('pumpkin_unlocked_skins', JSON.stringify(['classic']));
+                this.saveData('pumpkin_panic_skin', 'classic');
                 this.coins = Config.ECONOMY.STARTING_COINS || 25;
                 this.unlockedSkins = ['classic'];
                 this.selectedSkin = 'classic';
             } else {
-                const savedCoins = localStorage.getItem('pumpkin_coins');
-                this.coins = (savedCoins !== null) ? parseInt(savedCoins) : (Config.ECONOMY.STARTING_COINS || 25);
+                const savedCoins = this.loadData('pumpkin_coins');
+                this.coins = (savedCoins !== null && savedCoins !== undefined) ? parseInt(savedCoins) : (Config.ECONOMY.STARTING_COINS || 25);
                 try {
-                    this.unlockedSkins = JSON.parse(localStorage.getItem('pumpkin_unlocked_skins')) || ['classic'];
+                    this.unlockedSkins = JSON.parse(this.loadData('pumpkin_unlocked_skins')) || ['classic'];
                 } catch (e) {
                     this.unlockedSkins = ['classic'];
                 }
@@ -36,9 +36,9 @@
             }
 
             // Equipped Weapon from Armory
-            this.selectedGun = localStorage.getItem('pumpkin_equipped_gun') || 'SEED_PISTOL';
+            this.selectedGun = this.loadData('pumpkin_equipped_gun', 'SEED_PISTOL');
             try {
-                this.unlockedGuns = JSON.parse(localStorage.getItem('pumpkin_unlocked_guns')) || ['SEED_PISTOL'];
+                this.unlockedGuns = JSON.parse(this.loadData('pumpkin_unlocked_guns')) || ['SEED_PISTOL'];
             } catch (e) {
                 this.unlockedGuns = ['SEED_PISTOL'];
             }
@@ -129,6 +129,11 @@
             this.reconnectNowBtn = document.getElementById('reconnect-now-btn');
             this.reconnectLocalBtn = document.getElementById('reconnect-local-btn');
 
+            // Multiplayer Coming Soon Modal Elements
+            this.mpComingSoonModal = document.getElementById('multiplayer-coming-soon-modal');
+            this.closeComingSoonBtn = document.getElementById('close-coming-soon-btn');
+            this.comingSoonPlayBtn = document.getElementById('coming-soon-play-btn');
+
             // Rewarded Ad Elements
             this.rewardedAdContainer = document.getElementById('rewarded-ad-container');
             this.rewardedCoinsBtn = document.getElementById('rewarded-coins-btn');
@@ -178,20 +183,171 @@
             this.playAgainBtn = document.getElementById('play-again-btn');
             this.mainMenuBtn = document.getElementById('main-menu-btn');
 
+            // Pause Menu Elements
+            this.hudPauseBtn = document.getElementById('hud-pause-btn');
+            this.pauseModal = document.getElementById('pause-modal');
+            this.pauseResumeBtn = document.getElementById('pause-resume-btn');
+            this.pauseAudioBtn = document.getElementById('pause-audio-btn');
+            this.pauseLeaveBtn = document.getElementById('pause-leave-btn');
+            this.closePauseXBtn = document.getElementById('close-pause-x-btn');
+            this.pauseModeDesc = document.getElementById('pause-mode-desc');
+
             // Mobile Virtual Joystick elements
             this.joystickBase = document.getElementById('virtual-joystick-base');
             this.joystickKnob = document.getElementById('virtual-joystick-knob');
             this.mobileFireBtn = document.getElementById('mobile-fire-btn');
+            this.mobileAutofireBtn = document.getElementById('mobile-autofire-btn');
+            this.isMobileAutofire = (localStorage.getItem('pumpkin_autofire') === 'true');
             this.touchMoveId = null;
             this.touchAimId = null;
             this.joystickOrigin = { x: 0, y: 0 };
 
             this.initEvents();
+            this.initCrazyGamesAccount();
             this.initSkinSelector();
             this.initGunSelector();
             this.updateAudioButtonState();
             this.updateCoinsDisplay();
             this.initMobileControls();
+            this.checkUrlInvite();
+        }
+
+        // ==========================================
+        // CRAZYGAMES CLOUD DATA MODULE & ACCOUNT INTEGRATION
+        // ==========================================
+
+        loadData(key, fallback = null) {
+            if (window.PumpkinPanic && window.PumpkinPanic.CrazyGames) {
+                return window.PumpkinPanic.CrazyGames.getData(key, fallback);
+            }
+            try {
+                const val = localStorage.getItem(key);
+                return (val !== null && val !== undefined) ? val : fallback;
+            } catch (e) {
+                return fallback;
+            }
+        }
+
+        saveData(key, value) {
+            if (window.PumpkinPanic && window.PumpkinPanic.CrazyGames) {
+                window.PumpkinPanic.CrazyGames.setData(key, value);
+            } else {
+                try {
+                    localStorage.setItem(key, String(value));
+                } catch (e) {}
+            }
+        }
+
+        initCrazyGamesAccount() {
+            this.cgLoginBtn = document.getElementById('cg-login-btn');
+            this.cgUserCard = document.getElementById('cg-user-card');
+            this.cgUserAvatar = document.getElementById('cg-user-avatar');
+            this.cgUserAvatarFallback = document.getElementById('cg-user-avatar-fallback');
+            this.cgUserName = document.getElementById('cg-user-name');
+
+            const updateAccountUI = (user) => {
+                if (user && user.username) {
+                    this.playerName = user.username;
+                    this.saveData('pumpkin_panic_name', user.username);
+                    if (this.nameInput) this.nameInput.value = user.username;
+                    if (this.cgUserName) this.cgUserName.textContent = user.username;
+                    if (user.profilePictureUrl && this.cgUserAvatar) {
+                        this.cgUserAvatar.src = user.profilePictureUrl;
+                        this.cgUserAvatar.style.display = 'inline-block';
+                        if (this.cgUserAvatarFallback) this.cgUserAvatarFallback.style.display = 'none';
+                    } else if (this.cgUserAvatarFallback) {
+                        this.cgUserAvatarFallback.style.display = 'inline-block';
+                        if (this.cgUserAvatar) this.cgUserAvatar.style.display = 'none';
+                    }
+                    if (this.cgUserCard) this.cgUserCard.classList.remove('hidden');
+                    if (this.cgLoginBtn) this.cgLoginBtn.classList.add('hidden');
+                } else {
+                    if (this.cgUserCard) this.cgUserCard.classList.add('hidden');
+                    if (this.cgLoginBtn) this.cgLoginBtn.classList.remove('hidden');
+                }
+            };
+
+            const cg = window.PumpkinPanic.CrazyGames;
+            if (cg) {
+                if (cg.currentUser) {
+                    updateAccountUI(cg.currentUser);
+                } else {
+                    updateAccountUI(null);
+                }
+
+                // Register CrazyGames Auth Listener for live in-session logins
+                cg.addAuthListener((user) => {
+                    console.log('[UIManager] CrazyGames player logged in:', user.username);
+                    updateAccountUI(user);
+                    this.reloadCloudProgress();
+                });
+            }
+
+            // CrazyGames Sign In Button click handler
+            if (this.cgLoginBtn) {
+                this.cgLoginBtn.addEventListener('click', async () => {
+                    if (window.PumpkinPanic.AudioSystem) {
+                        window.PumpkinPanic.AudioSystem.playButtonClick();
+                    }
+                    if (window.PumpkinPanic.CrazyGames) {
+                        const user = await window.PumpkinPanic.CrazyGames.promptAuth();
+                        if (user) {
+                            updateAccountUI(user);
+                            this.reloadCloudProgress();
+                        }
+                    }
+                });
+            }
+        }
+
+        reloadCloudProgress() {
+            const cg = window.PumpkinPanic.CrazyGames;
+            if (!cg) return;
+            const savedCoins = cg.getData('pumpkin_coins');
+            if (savedCoins !== null && savedCoins !== undefined) {
+                this.coins = parseInt(savedCoins) || this.coins;
+                this.updateCoinsDisplay();
+            }
+            try {
+                const skins = JSON.parse(cg.getData('pumpkin_unlocked_skins'));
+                if (Array.isArray(skins)) {
+                    this.unlockedSkins = skins;
+                    this.initSkinSelector();
+                }
+            } catch (e) {}
+            try {
+                const guns = JSON.parse(cg.getData('pumpkin_unlocked_guns'));
+                if (Array.isArray(guns)) {
+                    this.unlockedGuns = guns;
+                    this.initGunSelector();
+                }
+            } catch (e) {}
+        }
+
+        checkUrlInvite() {
+            let roomCode = null;
+            if (typeof window !== 'undefined' && window.location) {
+                const params = new URLSearchParams(window.location.search);
+                roomCode = params.get('room') || params.get('roomName') || params.get('roomId');
+            }
+            if (!roomCode && window.PumpkinPanic.CrazyGames && window.PumpkinPanic.CrazyGames.pendingInviteParams) {
+                const ip = window.PumpkinPanic.CrazyGames.pendingInviteParams;
+                roomCode = ip.room || ip.roomName || ip.roomId;
+            }
+
+            if (roomCode) {
+                this.pendingInviteCode = roomCode.trim().toUpperCase();
+                console.log('[UIManager] Detected room invite code:', this.pendingInviteCode);
+                if (this.inviteRoomCodeTag) {
+                    this.inviteRoomCodeTag.textContent = this.pendingInviteCode;
+                }
+                if (this.invitePlayerName) {
+                    this.invitePlayerName.value = this.playerName || 'SpookyPumpkin';
+                }
+                if (this.inviteModal) {
+                    this.inviteModal.classList.remove('hidden');
+                }
+            }
         }
 
         initEvents() {
@@ -218,14 +374,28 @@
                 this.nameInput.value = this.playerName;
                 this.nameInput.addEventListener('input', (e) => {
                     this.playerName = e.target.value.trim() || 'SpookyPumpkin';
-                    localStorage.setItem('pumpkin_panic_name', this.playerName);
+                    this.saveData('pumpkin_panic_name', this.playerName);
                 });
             }
 
-            // Primary Play Buttons
+            // Primary Play Buttons - Real Online Multiplayer Activated
             if (this.playMultiplayerBtn) {
                 this.playMultiplayerBtn.addEventListener('click', () => {
-                    this.openMultiplayerModal();
+                    if (this.multiplayerModal) {
+                        this.multiplayerModal.classList.remove('hidden');
+                        this.checkServerHealth();
+                    }
+                });
+            }
+            if (this.closeComingSoonBtn && this.mpComingSoonModal) {
+                this.closeComingSoonBtn.addEventListener('click', () => {
+                    this.mpComingSoonModal.classList.add('hidden');
+                });
+            }
+            if (this.comingSoonPlayBtn && this.mpComingSoonModal) {
+                this.comingSoonPlayBtn.addEventListener('click', () => {
+                    this.mpComingSoonModal.classList.add('hidden');
+                    this.startLocalGame();
                 });
             }
             if (this.playLocalBtn) {
@@ -406,31 +576,19 @@
                 });
             }
 
-            // Play Again Button (Instant Replay with Midgame Ad flow)
+            // Play Again Button (Instant Rematch - No Ads)
             if (this.playAgainBtn) {
                 this.playAgainBtn.addEventListener('click', () => {
                     this.hideEndScreen();
-                    if (window.PumpkinPanic.CrazyGames) {
-                        window.PumpkinPanic.CrazyGames.requestMidgameAd(() => {
-                            if (this.gameScene) this.gameScene.restartMatch();
-                        });
-                    } else {
-                        if (this.gameScene) this.gameScene.restartMatch();
-                    }
+                    if (this.gameScene) this.gameScene.restartMatch();
                 });
             }
 
-            // Main Menu Button (with Midgame Ad flow)
+            // Main Menu Button (Direct Return - No Ads)
             if (this.mainMenuBtn) {
                 this.mainMenuBtn.addEventListener('click', () => {
                     this.hideEndScreen();
-                    if (window.PumpkinPanic.CrazyGames) {
-                        window.PumpkinPanic.CrazyGames.requestMidgameAd(() => {
-                            if (this.gameScene) this.gameScene.returnToMenu();
-                        });
-                    } else {
-                        if (this.gameScene) this.gameScene.returnToMenu();
-                    }
+                    if (this.gameScene) this.gameScene.returnToMenu();
                 });
             }
 
@@ -490,6 +648,50 @@
                     }
                 }
             });
+
+            // Pause Modal Controls & Keyboard ESC listener
+            const togglePause = () => {
+                if (!this.gameScene || !this.gameScene.matchActive || this.gameScene.matchOver) return;
+                const isCurrentlyPaused = this.pauseModal && !this.pauseModal.classList.contains('hidden');
+                if (isCurrentlyPaused) {
+                    this.resumeGame();
+                } else {
+                    this.pauseGame();
+                }
+            };
+
+            if (this.hudPauseBtn) {
+                this.hudPauseBtn.addEventListener('click', togglePause);
+            }
+            if (this.pauseResumeBtn) {
+                this.pauseResumeBtn.addEventListener('click', () => this.resumeGame());
+            }
+            if (this.closePauseXBtn) {
+                this.closePauseXBtn.addEventListener('click', () => this.resumeGame());
+            }
+            if (this.pauseAudioBtn) {
+                this.pauseAudioBtn.addEventListener('click', () => {
+                    if (window.PumpkinPanic.AudioSystem) {
+                        window.PumpkinPanic.AudioSystem.toggleMute();
+                        this.updateAudioButtonState();
+                    }
+                });
+            }
+            if (this.pauseLeaveBtn) {
+                this.pauseLeaveBtn.addEventListener('click', () => {
+                    this.leaveMatchToMenu();
+                });
+            }
+
+            // Keyboard Shortcut: ESC key toggles Pause
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' || e.code === 'Escape') {
+                    if (this.gameScene && this.gameScene.matchActive && !this.gameScene.matchOver) {
+                        e.preventDefault();
+                        togglePause();
+                    }
+                }
+            });
         }
 
         // ==========================================
@@ -498,7 +700,7 @@
 
         addCoins(amount) {
             this.coins += amount;
-            localStorage.setItem('pumpkin_coins', this.coins);
+            this.saveData('pumpkin_coins', this.coins);
             this.updateCoinsDisplay();
 
             if (window.PumpkinPanic.AudioSystem) {
@@ -529,16 +731,16 @@
 
             // Deduct coins & unlock
             this.coins -= skin.price;
-            localStorage.setItem('pumpkin_coins', this.coins);
+            this.saveData('pumpkin_coins', this.coins);
 
             if (!this.unlockedSkins.includes(skinKey)) {
                 this.unlockedSkins.push(skinKey);
-                localStorage.setItem('pumpkin_unlocked_skins', JSON.stringify(this.unlockedSkins));
+                this.saveData('pumpkin_unlocked_skins', JSON.stringify(this.unlockedSkins));
             }
 
             // Equip newly unlocked skin
             this.selectedSkin = skinKey;
-            localStorage.setItem('pumpkin_panic_skin', skinKey);
+            this.saveData('pumpkin_panic_skin', skinKey);
 
             if (window.PumpkinPanic.AudioSystem) {
                 window.PumpkinPanic.AudioSystem.playSkinUnlock();
@@ -614,7 +816,7 @@
                     btn.addEventListener('click', (e) => {
                         e.stopPropagation();
                         this.selectedSkin = key;
-                        localStorage.setItem('pumpkin_panic_skin', key);
+                        this.saveData('pumpkin_panic_skin', key);
                         this.initSkinSelector();
                     });
                 } else {
@@ -634,7 +836,7 @@
                 if (isUnlocked && !isEquipped) {
                     card.addEventListener('click', () => {
                         this.selectedSkin = key;
-                        localStorage.setItem('pumpkin_panic_skin', key);
+                        this.saveData('pumpkin_panic_skin', key);
                         this.initSkinSelector();
                     });
                 }
@@ -730,7 +932,7 @@
                     btn.addEventListener('click', (e) => {
                         e.stopPropagation();
                         this.selectedGun = key;
-                        localStorage.setItem('pumpkin_equipped_gun', key);
+                        this.saveData('pumpkin_equipped_gun', key);
                         this.initGunSelector();
                     });
                 } else {
@@ -750,7 +952,7 @@
                 if (isUnlocked && !isEquipped) {
                     card.addEventListener('click', () => {
                         this.selectedGun = key;
-                        localStorage.setItem('pumpkin_equipped_gun', key);
+                        this.saveData('pumpkin_equipped_gun', key);
                         this.initGunSelector();
                     });
                 }
@@ -771,15 +973,15 @@
             }
 
             this.coins -= gun.price;
-            localStorage.setItem('pumpkin_coins', this.coins);
+            this.saveData('pumpkin_coins', this.coins);
 
             if (!this.unlockedGuns.includes(gunKey)) {
                 this.unlockedGuns.push(gunKey);
-                localStorage.setItem('pumpkin_unlocked_guns', JSON.stringify(this.unlockedGuns));
+                this.saveData('pumpkin_unlocked_guns', JSON.stringify(this.unlockedGuns));
             }
 
             this.selectedGun = gunKey;
-            localStorage.setItem('pumpkin_equipped_gun', gunKey);
+            this.saveData('pumpkin_equipped_gun', gunKey);
 
             if (window.PumpkinPanic.AudioSystem) {
                 window.PumpkinPanic.AudioSystem.playSkinUnlock();
@@ -794,40 +996,91 @@
         // ==========================================
 
         initMobileControls() {
-            // Check touch capability
-            const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.innerWidth <= 900);
+            // Check touch capability or mobile viewport
+            const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.innerWidth <= 950);
             const mobileOverlay = document.getElementById('mobile-controls');
             if (mobileOverlay && isTouch) {
                 mobileOverlay.classList.remove('hidden');
             }
+            if (this.joystickBase && isTouch) {
+                this.joystickBase.classList.remove('hidden');
+                this.joystickBase.classList.add('resting');
+            }
 
-            // Left side touch area for Virtual Joystick movement
+            // Sync Auto-Fire button initial state
+            if (this.mobileAutofireBtn) {
+                this.mobileAutofireBtn.classList.toggle('active', !!this.isMobileAutofire);
+                this.mobileAutofireBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.isMobileAutofire = !this.isMobileAutofire;
+                    localStorage.setItem('pumpkin_autofire', this.isMobileAutofire ? 'true' : 'false');
+                    this.mobileAutofireBtn.classList.toggle('active', this.isMobileAutofire);
+                    if (this.gameScene && this.gameScene.player) {
+                        this.gameScene.player.isAutoFiring = this.isMobileAutofire;
+                    }
+                    if (window.PumpkinPanic.AudioSystem) {
+                        window.PumpkinPanic.AudioSystem.playButtonHover();
+                    }
+                });
+            }
+
+            // Dedicated Fire Button (Tap & Hold)
+            if (this.mobileFireBtn) {
+                const handleFireStart = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (this.gameScene && this.gameScene.player) {
+                        this.gameScene.player.isAutoFiring = true;
+                    }
+                };
+
+                const handleFireEnd = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (this.gameScene && this.gameScene.player) {
+                        this.gameScene.player.isAutoFiring = !!this.isMobileAutofire;
+                    }
+                };
+
+                this.mobileFireBtn.addEventListener('touchstart', handleFireStart, { passive: false });
+                this.mobileFireBtn.addEventListener('touchend', handleFireEnd, { passive: false });
+                this.mobileFireBtn.addEventListener('touchcancel', handleFireEnd, { passive: false });
+                this.mobileFireBtn.addEventListener('mousedown', handleFireStart);
+                this.mobileFireBtn.addEventListener('mouseup', handleFireEnd);
+            }
+
+            // Touch Area Handling: Left 50% for Virtual Joystick, Right 50% for Aiming
             window.addEventListener('touchstart', (e) => {
                 for (let i = 0; i < e.changedTouches.length; i++) {
                     const touch = e.changedTouches[i];
-                    // Left half: movement joystick
+                    const targetEl = touch.target;
+                    
+                    // Don't intercept touches on interactive UI buttons/modals
+                    if (targetEl && (targetEl.closest('#mobile-fire-btn') || targetEl.closest('#mobile-autofire-btn') || targetEl.closest('.glass-panel') || targetEl.closest('.modal-card') || targetEl.closest('#start-screen') || targetEl.closest('#end-screen'))) {
+                        continue;
+                    }
+
+                    // Left half: Virtual Joystick Movement
                     if (touch.clientX < window.innerWidth * 0.5 && this.touchMoveId === null && !this.hud.classList.contains('hidden')) {
                         this.touchMoveId = touch.identifier;
                         this.joystickOrigin = { x: touch.clientX, y: touch.clientY };
 
                         if (this.joystickBase) {
+                            this.joystickBase.classList.remove('resting');
                             this.joystickBase.style.left = `${touch.clientX}px`;
                             this.joystickBase.style.top = `${touch.clientY}px`;
-                            this.joystickBase.classList.remove('hidden');
                         }
                         if (this.joystickKnob) {
                             this.joystickKnob.style.transform = `translate(-50%, -50%)`;
                         }
                     } 
-                    // Right half: Touch Aim & Shoot
+                    // Right half: Touch Aiming
                     else if (touch.clientX >= window.innerWidth * 0.5 && this.touchAimId === null && !this.hud.classList.contains('hidden')) {
-                        // Exclude touch on the fire button itself
-                        if (e.target !== this.mobileFireBtn) {
-                            this.touchAimId = touch.identifier;
-                            this.updateTouchAim(touch.clientX, touch.clientY);
-                            if (this.gameScene && this.gameScene.player) {
-                                this.gameScene.player.isAutoFiring = true;
-                            }
+                        this.touchAimId = touch.identifier;
+                        this.updateTouchAim(touch.clientX, touch.clientY);
+                        if (this.gameScene && this.gameScene.player && !this.isMobileAutofire) {
+                            this.gameScene.player.isAutoFiring = true;
                         }
                     }
                 }
@@ -841,7 +1094,7 @@
                         const dx = touch.clientX - this.joystickOrigin.x;
                         const dy = touch.clientY - this.joystickOrigin.y;
                         const dist = Math.hypot(dx, dy);
-                        const maxRadius = 45;
+                        const maxRadius = 48;
 
                         const clampedDist = Math.min(dist, maxRadius);
                         const angle = Math.atan2(dy, dx);
@@ -852,7 +1105,7 @@
                             this.joystickKnob.style.transform = `translate(calc(-50% + ${knobX}px), calc(-50% + ${knobY}px))`;
                         }
 
-                        // Feed normalized vector to player
+                        // Feed normalized directional vector to player
                         if (this.gameScene && this.gameScene.player) {
                             this.gameScene.player.joystickVector = {
                                 x: knobX / maxRadius,
@@ -872,7 +1125,12 @@
                     if (touch.identifier === this.touchMoveId) {
                         this.touchMoveId = null;
                         if (this.joystickBase) {
-                            this.joystickBase.classList.add('hidden');
+                            this.joystickBase.classList.add('resting');
+                            this.joystickBase.style.left = '';
+                            this.joystickBase.style.top = '';
+                        }
+                        if (this.joystickKnob) {
+                            this.joystickKnob.style.transform = `translate(-50%, -50%)`;
                         }
                         if (this.gameScene && this.gameScene.player) {
                             this.gameScene.player.joystickVector = { x: 0, y: 0 };
@@ -880,7 +1138,8 @@
                     } else if (touch.identifier === this.touchAimId) {
                         this.touchAimId = null;
                         if (this.gameScene && this.gameScene.player) {
-                            this.gameScene.player.isAutoFiring = false;
+                            this.gameScene.player.hasTouchAim = false;
+                            this.gameScene.player.isAutoFiring = !!this.isMobileAutofire;
                         }
                     }
                 }
@@ -888,28 +1147,13 @@
 
             window.addEventListener('touchend', onTouchEnd);
             window.addEventListener('touchcancel', onTouchEnd);
-
-            // Dedicated Fire Button (Tap & Hold)
-            if (this.mobileFireBtn) {
-                this.mobileFireBtn.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    if (this.gameScene && this.gameScene.player) {
-                        this.gameScene.player.isAutoFiring = true;
-                    }
-                });
-                this.mobileFireBtn.addEventListener('touchend', (e) => {
-                    e.preventDefault();
-                    if (this.gameScene && this.gameScene.player) {
-                        this.gameScene.player.isAutoFiring = false;
-                    }
-                });
-            }
         }
 
         updateTouchAim(screenX, screenY) {
-            if (!this.gameScene || !this.gameScene.player) return;
+            if (!this.gameScene || !this.gameScene.player || !this.gameScene.cameras || !this.gameScene.cameras.main) return;
             const worldPt = this.gameScene.cameras.main.getWorldPoint(screenX, screenY);
             const player = this.gameScene.player;
+            player.hasTouchAim = true;
             player.aimAngle = Phaser.Math.Angle.Between(player.x, player.y, worldPt.x, worldPt.y);
 
             if (player.aimPointer) {
@@ -924,6 +1168,49 @@
             if (this.muteBtn) {
                 this.muteBtn.innerHTML = isMuted ? '🔇 Audio: OFF' : '🔊 Audio: ON';
                 this.muteBtn.classList.toggle('muted', isMuted);
+            }
+            if (this.pauseAudioBtn) {
+                this.pauseAudioBtn.innerHTML = isMuted ? '🔇 Audio: OFF' : '🔊 Audio: ON';
+                this.pauseAudioBtn.classList.toggle('muted', isMuted);
+            }
+        }
+
+        pauseGame() {
+            if (this.pauseModal) {
+                this.pauseModal.classList.remove('hidden');
+                if (this.pauseModeDesc && this.gameScene) {
+                    if (this.gameScene.isMultiplayer) {
+                        this.pauseModeDesc.innerHTML = '🌐 <b>Online Arena:</b> The server match continues in real-time. Adjust settings or leave safely below.';
+                    } else {
+                        this.pauseModeDesc.innerHTML = '⏸️ Practice mode paused. Take a breather, adjust audio, or return to the menu.';
+                    }
+                }
+            }
+            if (this.gameScene && typeof this.gameScene.pauseGame === 'function') {
+                this.gameScene.pauseGame();
+            }
+        }
+
+        resumeGame() {
+            if (this.pauseModal) {
+                this.pauseModal.classList.add('hidden');
+            }
+            if (this.gameScene && typeof this.gameScene.resumeGame === 'function') {
+                this.gameScene.resumeGame();
+            }
+        }
+
+        leaveMatchToMenu() {
+            if (this.pauseModal) {
+                this.pauseModal.classList.add('hidden');
+            }
+            if (this.currentNetworkAdapter) {
+                this.currentNetworkAdapter.manualLeave = true;
+                this.currentNetworkAdapter.disconnect();
+                this.currentNetworkAdapter = null;
+            }
+            if (this.gameScene) {
+                this.gameScene.returnToMenu();
             }
         }
 
@@ -1133,7 +1420,7 @@
                 window.PumpkinPanic.CrazyGames.updateRoom({
                     roomId: this.currentRoomCode,
                     isJoinable: true,
-                    inviteParams: { room: this.currentRoomCode }
+                    inviteParams: { room: this.currentRoomCode, roomName: this.currentRoomCode }
                 });
             }
         }
@@ -1432,8 +1719,15 @@
             if (this.multiplayerModal) this.multiplayerModal.classList.add('hidden');
             if (this.connectionErrorModal) this.connectionErrorModal.classList.add('hidden');
 
+            if (!gameScene || !gameScene.isMultiplayer) {
+                this.setRoomCodeBadge(null);
+            }
+
             if (this.hudPlayerName) {
                 this.hudPlayerName.innerText = this.playerName;
+            }
+            if (gameScene && gameScene.player) {
+                gameScene.player.isAutoFiring = !!this.isMobileAutofire;
             }
             this.updateCoinsDisplay();
         }
@@ -1583,13 +1877,27 @@
             if (!this.leaderboardList) return;
             this.leaderboardList.innerHTML = '';
 
-            rankings.forEach((entry, idx) => {
+            // Compact mode for small mobile landscape screens
+            const isSmall = window.innerHeight <= 520 || window.innerWidth <= 850;
+            let displayList = rankings;
+            if (isSmall && rankings.length > 4) {
+                const top3 = rankings.slice(0, 3);
+                const playerEntry = rankings.find(r => r.isPlayer);
+                if (playerEntry && !top3.some(r => r.isPlayer)) {
+                    displayList = [...top3, playerEntry];
+                } else {
+                    displayList = top3;
+                }
+            }
+
+            displayList.forEach((entry) => {
+                const actualIdx = rankings.indexOf(entry);
                 const li = document.createElement('li');
                 li.className = `leaderboard-item ${entry.isPlayer ? 'is-player' : ''} ${entry.isDead ? 'is-dead' : ''}`;
 
                 const rankSpan = document.createElement('span');
                 rankSpan.className = 'lb-rank';
-                rankSpan.innerText = `#${idx + 1}`;
+                rankSpan.innerText = `#${actualIdx + 1}`;
 
                 const nameSpan = document.createElement('span');
                 nameSpan.className = 'lb-name';

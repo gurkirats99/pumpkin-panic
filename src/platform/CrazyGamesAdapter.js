@@ -93,7 +93,14 @@
         async fetchUser() {
             if (!this.isOperating() || !window.CrazyGames.SDK.user) return null;
             try {
-                if (window.CrazyGames.SDK.user.isUserAccountAvailable) {
+                let isAvailable = true;
+                if (typeof window.CrazyGames.SDK.user.isUserAccountAvailable === 'function') {
+                    isAvailable = await window.CrazyGames.SDK.user.isUserAccountAvailable();
+                } else if (typeof window.CrazyGames.SDK.user.isUserAccountAvailable === 'boolean') {
+                    isAvailable = window.CrazyGames.SDK.user.isUserAccountAvailable;
+                }
+
+                if (isAvailable && typeof window.CrazyGames.SDK.user.getUser === 'function') {
                     const user = await window.CrazyGames.SDK.user.getUser();
                     if (user && user.username) {
                         this.currentUser = user;
@@ -102,9 +109,103 @@
                     }
                 }
             } catch (e) {
-                console.log('[CrazyGames] User not authenticated or guest player.');
+                console.log('[CrazyGames] User not authenticated or guest player:', e);
             }
             return null;
+        }
+
+        /**
+         * Trigger the CrazyGames login / register modal prompt for guest players.
+         */
+        async promptAuth() {
+            if (!this.isOperating() || !window.CrazyGames.SDK.user || typeof window.CrazyGames.SDK.user.showAuthPrompt !== 'function') {
+                console.log('[CrazyGames] Auth prompt not available in current environment.');
+                return null;
+            }
+            try {
+                const user = await window.CrazyGames.SDK.user.showAuthPrompt();
+                if (user && user.username) {
+                    this.currentUser = user;
+                    console.log('[CrazyGames] Player logged in via auth prompt:', user.username);
+                    return user;
+                }
+            } catch (err) {
+                console.log('[CrazyGames] Auth prompt dismissed or encountered error:', err);
+            }
+            return null;
+        }
+
+        /**
+         * Register a callback listener when a guest logs into their CrazyGames account during gameplay.
+         */
+        addAuthListener(callback) {
+            if (!this.isOperating() || !window.CrazyGames.SDK.user || typeof window.CrazyGames.SDK.user.addAuthListener !== 'function') {
+                return;
+            }
+            try {
+                window.CrazyGames.SDK.user.addAuthListener((user) => {
+                    console.log('[CrazyGames] Auth listener triggered! User logged in:', user);
+                    this.currentUser = user;
+                    if (callback) callback(user);
+                });
+            } catch (e) {
+                console.warn('[CrazyGames] addAuthListener failed:', e);
+            }
+        }
+
+        // ==========================================
+        // DATA MODULE (CLOUD PROGRESS & STORAGE)
+        // ==========================================
+
+        /**
+         * Retrieve a string key from CrazyGames Data Module with LocalStorage fallback.
+         */
+        getData(key, defaultValue = null) {
+            try {
+                if (this.isOperating() && window.CrazyGames.SDK.data && typeof window.CrazyGames.SDK.data.getItem === 'function') {
+                    const val = window.CrazyGames.SDK.data.getItem(key);
+                    if (val !== null && val !== undefined) return val;
+                }
+            } catch (e) {
+                console.warn('[CrazyGames] data.getItem failed, falling back to LocalStorage:', e);
+            }
+            try {
+                const localVal = localStorage.getItem(key);
+                return (localVal !== null && localVal !== undefined) ? localVal : defaultValue;
+            } catch (e) {
+                return defaultValue;
+            }
+        }
+
+        /**
+         * Save a string key to CrazyGames Data Module with LocalStorage backup.
+         */
+        setData(key, value) {
+            const strVal = String(value);
+            try {
+                if (this.isOperating() && window.CrazyGames.SDK.data && typeof window.CrazyGames.SDK.data.setItem === 'function') {
+                    window.CrazyGames.SDK.data.setItem(key, strVal);
+                }
+            } catch (e) {
+                console.warn('[CrazyGames] data.setItem failed:', e);
+            }
+            try {
+                localStorage.setItem(key, strVal);
+            } catch (e) {}
+        }
+
+        /**
+         * Remove a key from CrazyGames Data Module and LocalStorage.
+         */
+        removeData(key) {
+            try {
+                if (this.isOperating() && window.CrazyGames.SDK.data && typeof window.CrazyGames.SDK.data.removeItem === 'function') {
+                    window.CrazyGames.SDK.data.removeItem(key);
+                }
+            } catch (e) {}
+            try {
+                localStorage.removeItem(key);
+            } catch (e) {}
         }
 
         async checkAdblock() {
@@ -202,79 +303,13 @@
         // ==========================================
 
         requestMidgameAd(onComplete) {
-            if (!this.isOperating() || !window.CrazyGames.SDK.ad) {
-                if (onComplete) onComplete(false);
-                return;
-            }
-
-            const callbacks = {
-                adStarted: () => {
-                    this.isAdPlaying = true;
-                    if (window.PumpkinPanic.AudioSystem) {
-                        window.PumpkinPanic.AudioSystem.mute();
-                    }
-                },
-                adFinished: () => {
-                    this.isAdPlaying = false;
-                    if (window.PumpkinPanic.AudioSystem && (!window.PumpkinPanic.ui || !window.PumpkinPanic.ui.isManuallyMuted)) {
-                        window.PumpkinPanic.AudioSystem.unmute();
-                    }
-                    if (onComplete) onComplete(true);
-                },
-                adError: (error) => {
-                    this.isAdPlaying = false;
-                    console.log('[CrazyGames] Midgame ad bypassed or unfilled:', error ? error.code : 'unknown');
-                    if (window.PumpkinPanic.AudioSystem && (!window.PumpkinPanic.ui || !window.PumpkinPanic.ui.isManuallyMuted)) {
-                        window.PumpkinPanic.AudioSystem.unmute();
-                    }
-                    if (onComplete) onComplete(false);
-                }
-            };
-
-            try {
-                window.CrazyGames.SDK.ad.requestAd("midgame", callbacks);
-            } catch (err) {
-                console.warn('[CrazyGames] Error requesting midgame ad:', err);
-                if (onComplete) onComplete(false);
-            }
+            // Ads disabled per user release specification
+            if (onComplete) onComplete(true);
         }
 
         requestRewardedAd(onRewarded, onFailed) {
-            if (!this.isOperating() || !window.CrazyGames.SDK.ad) {
-                if (onFailed) onFailed({ code: 'sdkUnavailable', message: 'CrazyGames SDK not available' });
-                return;
-            }
-
-            const callbacks = {
-                adStarted: () => {
-                    this.isAdPlaying = true;
-                    if (window.PumpkinPanic.AudioSystem) {
-                        window.PumpkinPanic.AudioSystem.mute();
-                    }
-                },
-                adFinished: () => {
-                    this.isAdPlaying = false;
-                    if (window.PumpkinPanic.AudioSystem && (!window.PumpkinPanic.ui || !window.PumpkinPanic.ui.isManuallyMuted)) {
-                        window.PumpkinPanic.AudioSystem.unmute();
-                    }
-                    if (onRewarded) onRewarded();
-                },
-                adError: (error) => {
-                    this.isAdPlaying = false;
-                    console.log('[CrazyGames] Rewarded ad unfilled/error:', error);
-                    if (window.PumpkinPanic.AudioSystem && (!window.PumpkinPanic.ui || !window.PumpkinPanic.ui.isManuallyMuted)) {
-                        window.PumpkinPanic.AudioSystem.unmute();
-                    }
-                    if (onFailed) onFailed(error);
-                }
-            };
-
-            try {
-                window.CrazyGames.SDK.ad.requestAd("rewarded", callbacks);
-            } catch (err) {
-                console.warn('[CrazyGames] Error requesting rewarded ad:', err);
-                if (onFailed) onFailed(err);
-            }
+            // Ads disabled per user release specification
+            if (onRewarded) onRewarded();
         }
 
         // ==========================================

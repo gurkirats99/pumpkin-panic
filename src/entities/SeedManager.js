@@ -22,6 +22,7 @@
         }
 
         spawn(x, y, isSuper = false, isDrop = false) {
+            if (!this.scene || !this.scene.sys || !this.scene.physics || !this.scene.physics.world) return;
             this.isSuper = isSuper;
             this.isDrop = isDrop;
             this.xpValue = isSuper ? Config.SEEDS.SUPER_XP : Config.SEEDS.NORMAL_XP;
@@ -34,17 +35,21 @@
 
             // Subtle floating bob tween
             if (this.bobTween) this.bobTween.stop();
-            this.bobTween = this.scene.tweens.add({
-                targets: this,
-                y: y - 5,
-                duration: 900 + Math.random() * 400,
-                yoyo: true,
-                repeat: -1,
-                ease: 'Sine.easeInOut'
-            });
+            if (this.scene && this.scene.tweens) {
+                this.bobTween = this.scene.tweens.add({
+                    targets: this,
+                    y: y - 5,
+                    duration: 900 + Math.random() * 400,
+                    yoyo: true,
+                    repeat: -1,
+                    ease: 'Sine.easeInOut'
+                });
+            }
 
             const r = isSuper ? 16 : 10;
-            this.body.setCircle(r, -r + (isSuper ? 22 : 16), -r + (isSuper ? 22 : 16));
+            if (this.body) {
+                this.body.setCircle(r, -r + (isSuper ? 22 : 16), -r + (isSuper ? 22 : 16));
+            }
         }
 
         collect(collector) {
@@ -103,6 +108,7 @@
         }
 
         spawn(x, y, weaponType) {
+            if (!this.scene || !this.scene.sys || !this.scene.physics || !this.scene.physics.world) return;
             this.weaponType = weaponType;
             this.setTexture('pickup_' + weaponType.toLowerCase());
             this.enableBody(true, x, y, true, true);
@@ -111,18 +117,22 @@
 
             // Floating bob animation
             if (this.bobTween) this.bobTween.stop();
-            this.bobTween = this.scene.tweens.add({
-                targets: this,
-                y: y - 7,
-                scaleX: 1.08,
-                scaleY: 1.08,
-                duration: 900,
-                yoyo: true,
-                repeat: -1,
-                ease: 'Sine.easeInOut'
-            });
+            if (this.scene && this.scene.tweens) {
+                this.bobTween = this.scene.tweens.add({
+                    targets: this,
+                    y: y - 7,
+                    scaleX: 1.08,
+                    scaleY: 1.08,
+                    duration: 900,
+                    yoyo: true,
+                    repeat: -1,
+                    ease: 'Sine.easeInOut'
+                });
+            }
 
-            this.body.setCircle(18, 6, 6);
+            if (this.body) {
+                this.body.setCircle(18, 6, 6);
+            }
         }
 
         collect(collector) {
@@ -151,15 +161,17 @@
             }
 
             // Schedule respawn after 18 seconds (local mode only)
-            if (!this.scene.isMultiplayer && this.scene.seedManager) {
-                this.scene.time.delayedCall(18000 + Math.random() * 4000, () => {
-                    if (this.scene && this.scene.sys) {
-                        const pt = this.scene.seedManager.getRandomSafePoint();
+            if (!this.scene.isMultiplayer && this.scene.seedManager && this.scene.time) {
+                const sm = this.scene.seedManager;
+                const t = this.scene.time.delayedCall(18000 + Math.random() * 4000, () => {
+                    if (this.scene && this.scene.sys && this.scene.matchActive) {
+                        const pt = sm.getRandomSafePoint();
                         const types = ['TRIPLE', 'RAPID', 'BOUNCING', 'SHOTGUN', 'GHOSTFIRE', 'HOMING'];
                         const nextType = types[Math.floor(Math.random() * types.length)];
                         this.spawn(pt.x, pt.y, nextType);
                     }
                 });
+                if (sm.respawnTimers) sm.respawnTimers.push(t);
             }
         }
     }
@@ -324,13 +336,15 @@
             this.destroy();
 
             // Respawn after 55 seconds
-            if (this.scene && this.scene.seedManager) {
-                this.scene.time.delayedCall(55000, () => {
+            if (this.scene && this.scene.seedManager && this.scene.time) {
+                const sm = this.scene.seedManager;
+                const t = this.scene.time.delayedCall(55000, () => {
                     if (this.scene && this.scene.sys && this.scene.matchActive) {
-                        const pt = this.scene.seedManager.getRandomSafePoint();
-                        this.scene.seedManager.spawnPinata(pt.x, pt.y);
+                        const pt = sm.getRandomSafePoint();
+                        sm.spawnPinata(pt.x, pt.y);
                     }
                 });
+                if (sm.respawnTimers) sm.respawnTimers.push(t);
             }
         }
 
@@ -386,26 +400,33 @@
         }
 
         spawn(x, y) {
+            if (!this.scene || !this.scene.sys || !this.scene.physics || !this.scene.physics.world) return;
             this.isTriggered = false;
             this.enableBody(true, x, y, true, true);
             this.setAlpha(1);
             this.setScale(1);
             this.clearTint();
-            this.warningCircle.clear();
-            this.warningCircle.setVisible(false);
+            if (this.warningCircle) {
+                this.warningCircle.clear();
+                this.warningCircle.setVisible(false);
+            }
 
             if (this.pulseTween) this.pulseTween.stop();
-            this.pulseTween = this.scene.tweens.add({
-                targets: this,
-                scaleX: 1.1,
-                scaleY: 1.1,
-                duration: 700,
-                yoyo: true,
-                repeat: -1,
-                ease: 'Sine.easeInOut'
-            });
+            if (this.scene && this.scene.tweens) {
+                this.pulseTween = this.scene.tweens.add({
+                    targets: this,
+                    scaleX: 1.1,
+                    scaleY: 1.1,
+                    duration: 700,
+                    yoyo: true,
+                    repeat: -1,
+                    ease: 'Sine.easeInOut'
+                });
+            }
 
-            this.body.setCircle(18, 8, 8);
+            if (this.body) {
+                this.body.setCircle(18, 8, 8);
+            }
         }
 
         triggerFuse() {
@@ -489,13 +510,15 @@
             }
 
             // Respawn after delay
-            if (this.scene.seedManager) {
-                this.scene.time.delayedCall(Config.EXPLOSIVE_SEEDS.RESPAWN_DELAY, () => {
-                    if (this.scene && this.scene.sys) {
-                        const pt = this.scene.seedManager.getRandomSafePoint();
+            if (this.scene && this.scene.seedManager && this.scene.time) {
+                const sm = this.scene.seedManager;
+                const t = this.scene.time.delayedCall(Config.EXPLOSIVE_SEEDS.RESPAWN_DELAY, () => {
+                    if (this.scene && this.scene.sys && this.scene.matchActive) {
+                        const pt = sm.getRandomSafePoint();
                         this.spawn(pt.x, pt.y);
                     }
                 });
+                if (sm.respawnTimers) sm.respawnTimers.push(t);
             }
         }
 
@@ -510,6 +533,7 @@
     class SeedManager {
         constructor(scene) {
             this.scene = scene;
+            this.respawnTimers = [];
             this.seedsGroup = scene.physics.add.group({
                 classType: Seed,
                 runChildUpdate: false
@@ -594,8 +618,9 @@
         }
 
         scheduleRespawn(seed) {
-            this.scene.time.delayedCall(Config.SEEDS.RESPAWN_DELAY + Math.random() * 2000, () => {
-                if (!this.scene || !this.scene.sys) return;
+            if (!this.scene || !this.scene.time) return;
+            const t = this.scene.time.delayedCall(Config.SEEDS.RESPAWN_DELAY + Math.random() * 2000, () => {
+                if (!this.scene || !this.scene.sys || !this.scene.matchActive) return;
                 let pt = { x: 0, y: 0 };
                 if (this.scene.stormSystem) {
                     const center = this.scene.stormSystem.center;
@@ -608,8 +633,11 @@
                     pt = this.getRandomSafePoint();
                 }
 
-                seed.spawn(pt.x, pt.y, seed.isSuper, false);
+                if (seed && seed.scene && seed.scene.sys) {
+                    seed.spawn(pt.x, pt.y, seed.isSuper, false);
+                }
             });
+            if (this.respawnTimers) this.respawnTimers.push(t);
         }
 
         dropLootBurst(x, y, level = 1) {
@@ -634,13 +662,15 @@
                 seed.spawn(x, y, isSuper, true);
 
                 // Burst outward animation
-                this.scene.tweens.add({
-                    targets: seed,
-                    x: targetX,
-                    y: targetY,
-                    duration: 350 + Math.random() * 200,
-                    ease: 'Back.easeOut'
-                });
+                if (this.scene && this.scene.tweens) {
+                    this.scene.tweens.add({
+                        targets: seed,
+                        x: targetX,
+                        y: targetY,
+                        duration: 350 + Math.random() * 200,
+                        ease: 'Back.easeOut'
+                    });
+                }
             }
         }
 
@@ -648,20 +678,32 @@
             let closest = null;
             let minDist = maxDistance;
 
-            this.seedsGroup.children.iterate((seed) => {
-                if (seed && seed.active) {
-                    const d = Phaser.Math.Distance.Between(x, y, seed.x, seed.y);
-                    if (d < minDist) {
-                        minDist = d;
-                        closest = seed;
+            if (this.seedsGroup && this.seedsGroup.children) {
+                this.seedsGroup.children.iterate((seed) => {
+                    if (seed && seed.active) {
+                        const d = Phaser.Math.Distance.Between(x, y, seed.x, seed.y);
+                        if (d < minDist) {
+                            minDist = d;
+                            closest = seed;
+                        }
                     }
-                }
-            });
+                });
+            }
 
             return closest;
         }
 
         clear() {
+            // Cancel all pending respawn delayedCalls
+            if (this.respawnTimers && this.respawnTimers.length > 0) {
+                this.respawnTimers.forEach(t => {
+                    if (t && typeof t.remove === 'function') {
+                        t.remove(false);
+                    }
+                });
+                this.respawnTimers = [];
+            }
+
             if (this.seedsGroup) {
                 const seeds = this.seedsGroup.getChildren();
                 for (let i = seeds.length - 1; i >= 0; i--) {

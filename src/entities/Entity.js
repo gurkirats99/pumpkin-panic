@@ -35,8 +35,9 @@
             this.invulnTimer = 0;
 
             // Spawn Shield (Complete protection when match begins)
-            this.spawnShieldTimer = this.isBot ? 2500 : (Config.PLAYER.SPAWN_SHIELD_DURATION || 4000);
+            this.spawnShieldTimer = this.isBot ? 3000 : (Config.PLAYER.SPAWN_SHIELD_DURATION || 4000);
             this.speedMultiplier = 1.0;
+            this.evolvedMilestones = new Set();
 
             // Aim & Movement
             this.aimAngle = 0;
@@ -214,6 +215,11 @@
                 return false;
             }
 
+            // Bot-on-bot damage reduction: Prevents bots from annihilating each other in 5 seconds
+            if (attacker && attacker.isBot && this.isBot) {
+                amount = Math.max(3, Math.round(amount * 0.45));
+            }
+
             this.health = Math.max(0, this.health - amount);
             this.updateHealthBar();
 
@@ -364,41 +370,46 @@
             this.body.setCircle(newRadius);
             this.body.setOffset(-newRadius, -newRadius);
 
-            // Check Growth Tier Milestones & Evolve Appearance
+            // Check Growth Tier Milestones & Evolve Appearance (Fires strictly ONCE per milestone!)
             let tierTitle = null;
-            if (this.level === 4) {
-                tierTitle = '🎃 EVOLVED: CARVED BEAST!';
-                if (this.collarSprite) this.collarSprite.setVisible(true);
-            } else if (this.level === 8) {
-                tierTitle = '⚡ EVOLVED: GOURD COLOSSUS!';
-                if (this.auraRing) this.auraRing.setVisible(true);
-            } else if (this.level === 12) {
+            if (this.level >= 12 && !this.evolvedMilestones.has(12)) {
+                this.evolvedMilestones.add(12);
                 tierTitle = '👑 ASCENDED: HARVEST TITAN!';
                 if (this.titanCrownSprite) this.titanCrownSprite.setVisible(true);
+            } else if (this.level >= 8 && !this.evolvedMilestones.has(8)) {
+                this.evolvedMilestones.add(8);
+                tierTitle = '⚡ EVOLVED: GOURD COLOSSUS!';
+                if (this.auraRing) this.auraRing.setVisible(true);
+            } else if (this.level >= 4 && !this.evolvedMilestones.has(4)) {
+                this.evolvedMilestones.add(4);
+                tierTitle = '🎃 EVOLVED: CARVED BEAST!';
+                if (this.collarSprite) this.collarSprite.setVisible(true);
             }
 
             // Growth celebration particles
             this.scene.emitterManager.emitLevelUp(this.x, this.y);
 
-            // Floating celebration banner
-            const popupMsg = tierTitle || ('GROWTH UP! LVL ' + this.level);
-            const lvlText = this.scene.add.text(this.x, this.y - 48, popupMsg, {
-                fontFamily: 'Fredoka, sans-serif',
-                fontSize: tierTitle ? '18px' : '16px',
-                fontWeight: 'bold',
-                color: tierTitle ? '#ffaa00' : '#ffd700',
-                stroke: '#000000',
-                strokeThickness: 4
-            }).setOrigin(0.5);
+            // Floating celebration banner (Only show for human player or notable evolution)
+            if (!this.isBot || tierTitle) {
+                const popupMsg = tierTitle || ('GROWTH UP! LVL ' + this.level);
+                const lvlText = this.scene.add.text(this.x, this.y - 48, popupMsg, {
+                    fontFamily: 'Fredoka, sans-serif',
+                    fontSize: tierTitle ? '18px' : '16px',
+                    fontWeight: 'bold',
+                    color: tierTitle ? '#ffaa00' : '#ffd700',
+                    stroke: '#000000',
+                    strokeThickness: 4
+                }).setOrigin(0.5);
 
-            this.scene.tweens.add({
-                targets: lvlText,
-                y: lvlText.y - 45,
-                alpha: 0,
-                duration: tierTitle ? 1400 : 1000,
-                ease: 'Cubic.easeOut',
-                onComplete: () => lvlText.destroy()
-            });
+                this.scene.tweens.add({
+                    targets: lvlText,
+                    y: lvlText.y - 45,
+                    alpha: 0,
+                    duration: tierTitle ? 1400 : 1000,
+                    ease: 'Cubic.easeOut',
+                    onComplete: () => lvlText.destroy()
+                });
+            }
 
             // Player camera zoom punch celebration
             if (!this.isBot) {

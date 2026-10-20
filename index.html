@@ -50,8 +50,22 @@
     <!-- START SCREEN OVERLAY -->
     <div id="start-screen" class="overlay-screen">
         <div class="glass-panel main-menu-panel">
-            <!-- Header with Title & Live Coins Balance -->
+            <!-- Header with Title & Live Coins Balance & CrazyGames Account -->
             <div class="menu-top-bar">
+                <!-- CrazyGames Official Account Integration Widget -->
+                <div id="cg-account-widget" class="cg-account-widget">
+                    <button id="cg-login-btn" class="cg-login-btn hidden" type="button" title="Sign in with your CrazyGames account to save progress!">
+                        <span class="cg-icon">👾</span>
+                        <span class="cg-btn-text">Sign In</span>
+                    </button>
+                    <div id="cg-user-card" class="cg-user-card hidden">
+                        <img id="cg-user-avatar" class="cg-user-avatar" src="" alt="Avatar" style="display:none;" />
+                        <span id="cg-user-avatar-fallback" class="cg-user-avatar-fallback">👤</span>
+                        <span id="cg-user-name" class="cg-user-name">Player</span>
+                        <span class="cg-verified-badge" title="CrazyGames Cloud Account Linked">✓</span>
+                    </div>
+                </div>
+
                 <div class="coin-balance-pill">
                     <span class="coin-icon">🪙</span>
                     <span id="menu-coins-amount" class="coin-count">100</span>
@@ -102,13 +116,13 @@
                 </div>
             </div>
 
-            <!-- Primary Play Action Buttons (Multiplayer & Local Practice) -->
+            <!-- Primary Play Action Buttons -->
             <div class="play-action-column">
                 <button id="play-multiplayer-btn" class="btn-primary btn-online" type="button">
-                    🌐 PLAY ONLINE (MULTIPLAYER)
+                    🌐 PLAY ONLINE MULTIPLAYER
                 </button>
                 <button id="play-local-btn" class="btn-primary btn-practice" type="button">
-                    🎃 LOCAL PRACTICE (OFFLINE)
+                    🎃 OFFLINE BATTLE ROYALE (BOTS)
                 </button>
             </div>
 
@@ -117,6 +131,26 @@
                 <button id="how-to-play-btn" class="btn-secondary" type="button">📖 How to Play</button>
                 <button id="audio-toggle-btn" class="btn-secondary" type="button">🔊 Audio: ON</button>
             </div>
+        </div>
+    </div>
+
+    <!-- MULTIPLAYER COMING SOON MODAL -->
+    <div id="multiplayer-coming-soon-modal" class="modal-screen hidden">
+        <div class="modal-card mp-modal-card" style="max-width: 460px; text-align: center;">
+            <div class="modal-header-row" style="justify-content: center; position: relative;">
+                <h3 class="modal-title" style="margin-bottom: 0;">🌐 MULTIPLAYER ARENA</h3>
+                <button id="close-coming-soon-btn" class="modal-close-icon" type="button" style="position: absolute; right: 0;">✖</button>
+            </div>
+            <div style="font-size: 50px; margin: 16px 0 8px 0;">🎃⚡</div>
+            <h4 style="font-size: 19px; color: #ff9900; margin-bottom: 8px; font-weight: 800; font-family: 'Fredoka', cursive;">COMING IN NEXT UPDATE!</h4>
+            <p style="color: #cbd5e1; font-size: 13.5px; line-height: 1.6; margin-bottom: 20px;">
+                Online real-time PvP lobbies with custom room codes and friend invites are coming in the next update!
+                <br><br>
+                Jump into <b>Battle Royale</b> right now to unlock all 32 pumpkin forms and master all 22 deadly weapons!
+            </p>
+            <button id="coming-soon-play-btn" class="btn-primary" type="button" style="width: 100%;">
+                🎃 PLAY BATTLE ROYALE NOW
+            </button>
         </div>
     </div>
 
@@ -395,6 +429,9 @@
                 <span>🪙</span>
                 <span id="hud-coins" style="color: #ffd700;">100</span>
             </div>
+            <button id="hud-pause-btn" class="hud-stat-pill hud-pause-pill" type="button" title="Pause Game (ESC)">
+                <span>⚙️ ⏸️</span>
+            </button>
         </div>
 
         <!-- Storm Alert Banner -->
@@ -440,13 +477,26 @@
         </div>
 
         <!-- Mobile Floating Virtual Joystick Base & Knob -->
-        <div id="virtual-joystick-base" class="virtual-joystick-base hidden">
-            <div id="virtual-joystick-knob" class="virtual-joystick-knob"></div>
+        <div id="virtual-joystick-base" class="virtual-joystick-base resting">
+            <div id="virtual-joystick-knob" class="virtual-joystick-knob">
+                <span class="joystick-icon">🎃</span>
+            </div>
+            <div class="joystick-ring-pulse"></div>
+            <span class="joystick-label">MOVE</span>
         </div>
 
         <!-- Mobile Virtual Controls -->
         <div id="mobile-controls" class="mobile-controls">
-            <button id="mobile-fire-btn" type="button">FIRE 🎃</button>
+            <!-- Dedicated Auto-Fire Switch Pill -->
+            <button id="mobile-autofire-btn" class="mobile-autofire-btn" type="button" title="Toggle Auto-Fire">
+                <span class="autofire-dot"></span>
+                <span class="autofire-text">AUTO</span>
+            </button>
+            <!-- Heavy-Duty Glowing Fire Button -->
+            <button id="mobile-fire-btn" class="mobile-fire-btn" type="button" aria-label="Fire Weapon">
+                <span class="fire-icon">🔥</span>
+                <span class="fire-text">FIRE</span>
+            </button>
         </div>
     </div>
 
@@ -489,20 +539,37 @@
                 </div>
             </div>
 
-            <!-- CrazyGames Rewarded Bonus Option -->
-            <div id="rewarded-ad-container" class="rewarded-ad-box">
-                <button id="rewarded-coins-btn" class="btn-rewarded-ad" type="button">
-                    <span class="ad-badge">📺 BONUS</span>
-                    <span id="rewarded-ad-label">Watch Ad for +100 Coins 🪙</span>
-                </button>
-            </div>
-
-            <button id="play-again-btn" class="btn-primary" type="button">
+            <!-- Play Again & Replay Action Buttons -->
+            <button id="play-again-btn" class="btn-primary" type="button" style="margin-top: 10px;">
                 PLAY AGAIN 🔄
             </button>
             <div class="quick-restart-hint">⚡ Press <b>SPACE</b> or <b>R</b> for instant rematch!</div>
             <div class="button-row" style="margin-top: 8px;">
                 <button id="main-menu-btn" class="btn-secondary" type="button">Main Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- IN-GAME PAUSE MENU MODAL -->
+    <div id="pause-modal" class="modal-screen hidden">
+        <div class="modal-card pause-modal-card" style="max-width: 420px; text-align: center;">
+            <div class="modal-header-row" style="justify-content: center; position: relative;">
+                <h3 class="modal-title" style="color: #ffaa00; margin: 0; font-size: 24px;">⏸️ GAME PAUSED</h3>
+                <button id="close-pause-x-btn" class="modal-close-icon" type="button" style="position: absolute; right: 0;">✖</button>
+            </div>
+            <p id="pause-mode-desc" style="color: #94a3b8; font-size: 13.5px; text-align: center; margin: 12px 0 20px 0; line-height: 1.5;">
+                Game is paused. Take a quick breather, adjust audio, or return to the main menu!
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 8px;">
+                <button id="pause-resume-btn" class="btn-primary" type="button" style="font-size: 16px; padding: 13px;">
+                    ▶️ RESUME MATCH
+                </button>
+                <button id="pause-audio-btn" class="btn-secondary" type="button" style="font-size: 15px; padding: 11px;">
+                    🔊 Audio: ON
+                </button>
+                <button id="pause-leave-btn" class="btn-secondary btn-danger-action" type="button" style="font-size: 15px; padding: 11px; border-color: rgba(239, 68, 68, 0.5); color: #fca5a5;">
+                    🚪 LEAVE MATCH (MAIN MENU)
+                </button>
             </div>
         </div>
     </div>

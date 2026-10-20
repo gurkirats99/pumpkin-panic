@@ -59,6 +59,7 @@ class ProjectileState extends Schema {
         this.damage = 22;
         this.mutationType = "NORMAL";
         this.bouncesLeft = 0;
+        this.birthTime = 0;
     }
 }
 type("string")(ProjectileState.prototype, "id");
@@ -70,6 +71,7 @@ type("number")(ProjectileState.prototype, "vy");
 type("number")(ProjectileState.prototype, "damage");
 type("string")(ProjectileState.prototype, "mutationType");
 type("number")(ProjectileState.prototype, "bouncesLeft");
+type("number")(ProjectileState.prototype, "birthTime");
 
 class SeedState extends Schema {
     constructor() {

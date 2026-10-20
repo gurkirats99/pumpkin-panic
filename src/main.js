@@ -71,6 +71,13 @@
                 if (window.PumpkinPanic.ui) {
                     window.PumpkinPanic.ui.startMultiplayerGame({ mode: 'quick' });
                 }
+            } else if (window.PumpkinPanic.CrazyGames && window.PumpkinPanic.CrazyGames.pendingInviteParams) {
+                const invite = window.PumpkinPanic.CrazyGames.pendingInviteParams;
+                const roomCode = invite.room || invite.roomName || invite.roomId;
+                if (roomCode && window.PumpkinPanic.ui) {
+                    console.log('[CrazyGames] Auto-joining room from startup invite params:', roomCode);
+                    window.PumpkinPanic.ui.startMultiplayerGame({ mode: 'join', roomCode: roomCode });
+                }
             }
         });
     }

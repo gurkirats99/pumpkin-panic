@@ -99,9 +99,9 @@
             DROP_SEEDS_ON_DEATH_MAX: 12
         },
 
-        // Bots AI Settings (50 Players Total Match)
+        // Bots AI Settings (16 Players Total Match: 15 Bots + 1 Player)
         BOTS: {
-            COUNT: 49, // 49 bots + 1 player = 50 PLAYERS TOTAL!
+            COUNT: 15, // 15 bots + 1 player = 16 PLAYERS TOTAL (Matches 16-player lobby)
             NAMES: [
                 "JackO'Slasher [BOT]", "GourdGuzzler [BOT]", "SpookySpectre [BOT]", "CandyCorpse [BOT]",
                 "CobwebCrusher [BOT]", "Vampkin [BOT]", "BoneBiter [BOT]", "GhostlyGourd [BOT]",

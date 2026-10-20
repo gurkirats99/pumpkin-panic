@@ -149,17 +149,50 @@
                 this.body.setVelocity(this.body.velocity.x * 0.72, this.body.velocity.y * 0.72);
             }
 
-            // Real-Time Mouse Aiming (world coordinates calculation)
-            let screenX = this.scene.input.activePointer.x;
-            let screenY = this.scene.input.activePointer.y;
+            // Real-Time Aiming (Smart Auto-Aim for Touch/Mobile or Mouse Aim for Desktop)
+            const isTouchActive = (this.joystickVector.x !== 0 || this.joystickVector.y !== 0) || this.hasTouchAim || (('ontouchstart' in window) && window.innerWidth <= 950);
 
-            if (this.scene.mousePos && typeof this.scene.mousePos.x === 'number') {
-                screenX = this.scene.mousePos.x;
-                screenY = this.scene.mousePos.y;
+            if (isTouchActive) {
+                if (this.hasTouchAim) {
+                    // Touch aiming angle is actively updated by UIManager touch handlers
+                } else if (this.isAutoFiring) {
+                    // Smart auto-targeting: lock onto the nearest living bot within range
+                    let closestBot = null;
+                    let closestDistSq = 560 * 560;
+                    if (this.scene.bots && this.scene.bots.length > 0) {
+                        for (let i = 0; i < this.scene.bots.length; i++) {
+                            const bot = this.scene.bots[i];
+                            if (bot && bot.active && !bot.isDead) {
+                                const dSq = Phaser.Math.Distance.Squared(this.x, this.y, bot.x, bot.y);
+                                if (dSq < closestDistSq) {
+                                    closestDistSq = dSq;
+                                    closestBot = bot;
+                                }
+                            }
+                        }
+                    }
+                    if (closestBot) {
+                        this.aimAngle = Phaser.Math.Angle.Between(this.x, this.y, closestBot.x, closestBot.y);
+                    } else if (len > 0) {
+                        this.aimAngle = Math.atan2(vy, vx);
+                    }
+                } else if (len > 0) {
+                    // Face direction of movement
+                    this.aimAngle = Math.atan2(vy, vx);
+                }
+            } else {
+                // Desktop Mouse Aiming (world coordinates calculation)
+                let screenX = this.scene.input.activePointer.x;
+                let screenY = this.scene.input.activePointer.y;
+
+                if (this.scene.mousePos && typeof this.scene.mousePos.x === 'number') {
+                    screenX = this.scene.mousePos.x;
+                    screenY = this.scene.mousePos.y;
+                }
+
+                const worldPoint = this.scene.cameras.main.getWorldPoint(screenX, screenY);
+                this.aimAngle = Phaser.Math.Angle.Between(this.x, this.y, worldPoint.x, worldPoint.y);
             }
-
-            const worldPoint = this.scene.cameras.main.getWorldPoint(screenX, screenY);
-            this.aimAngle = Phaser.Math.Angle.Between(this.x, this.y, worldPoint.x, worldPoint.y);
 
             // Synchronize reticle visuals immediately in real time
             if (this.aimPointer) {
@@ -192,7 +225,9 @@
             const isSpaceDown = this.wasd.space.isDown;
 
             if ((isMouseDown || isSpaceDown || this.isAutoFiring) && time > this.lastFireTime + currentCooldown) {
-                this.fire(worldPoint.x, worldPoint.y, time);
+                const targetX = this.x + Math.cos(this.aimAngle) * 350;
+                const targetY = this.y + Math.sin(this.aimAngle) * 350;
+                this.fire(targetX, targetY, time);
             }
         }
 

@@ -41,8 +41,9 @@ class PumpkinArenaRoom extends Room {
             this.handlePlayerShoot(client.sessionId, message);
         });
 
-        // Note: Projectile collisions and damage are strictly calculated by the server's updateProjectiles() loop.
-        // Arbitrary client hit messages are rejected to prevent damage manipulation.
+        this.onMessage("player_hit_entity", (client, message) => {
+            this.handlePlayerHit(client.sessionId, message);
+        });
 
         this.onMessage("collect_seed", (client, message) => {
             this.handleCollectSeed(client.sessionId, message);
@@ -181,8 +182,20 @@ class PumpkinArenaRoom extends Room {
     }
 
     handlePlayerHit(sessionId, message) {
-        // Deprecated: Server is authoritative. Damage is strictly handled in updateProjectiles().
-        // Ignores unverified client damage requests to prevent cheat manipulation.
+        if (!message || !message.targetId) return;
+        const attacker = this.state.players.get(sessionId);
+        if (!attacker || attacker.isDead) return;
+
+        const target = this.state.players.get(message.targetId);
+        if (!target || target.isDead || target.id === attacker.id) return;
+
+        // Validation: verify distance between attacker and target is reasonable (< 950px)
+        const dist = Math.hypot(attacker.x - target.x, attacker.y - target.y);
+        if (dist > 950) return;
+
+        // Apply validated damage
+        const damage = Math.min(80, Math.max(8, Number(message.damage) || Config.PLAYER.BASE_DAMAGE));
+        this.applyDamage(target, damage, sessionId);
     }
 
     handleCollectSeed(sessionId, message) {
@@ -488,7 +501,7 @@ class PumpkinArenaRoom extends Room {
             proj.y += proj.vy * dtSec;
 
             // Check lifetime
-            if (now - (proj.birthTime || 0) > Config.PLAYER.BULLET_LIFETIME) {
+            if (!proj.birthTime || (now - proj.birthTime > Config.PLAYER.BULLET_LIFETIME)) {
                 toRemove.push(key);
                 return;
             }
@@ -704,8 +717,7 @@ class PumpkinArenaRoom extends Room {
         player.xp += amount;
         player.score = player.kills * 100 + player.xp;
 
-        const nextThreshold = Config.GROWTH.XP_THRESHOLDS[player.level] || Infinity;
-        if (player.xp >= nextThreshold && player.level < Config.GROWTH.MAX_LEVEL) {
+        while (player.level < Config.GROWTH.MAX_LEVEL && player.xp >= (Config.GROWTH.XP_THRESHOLDS[player.level] || Infinity)) {
             player.level++;
             player.maxHealth += Config.GROWTH.HP_PER_LEVEL;
             player.health += Config.GROWTH.HP_PER_LEVEL;

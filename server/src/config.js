@@ -115,7 +115,7 @@ module.exports = {
         NEON_DISC: { id: 'NEON_DISC', name: 'Cyber Slicer', type: 'DISC', damageMultiplier: 3.6, cooldownMultiplier: 1.3, speedMultiplier: 1.75, maxBounces: 2 }
     },
     BOTS: {
-        TARGET_MATCH_PLAYERS: 50,
+        TARGET_MATCH_PLAYERS: 16,
         NAMES: [
             "JackO'Slasher [BOT]", "GourdGuzzler [BOT]", "SpookySpectre [BOT]", "CandyCorpse [BOT]",
             "CobwebCrusher [BOT]", "Vampkin [BOT]", "BoneBiter [BOT]", "GhostlyGourd [BOT]",

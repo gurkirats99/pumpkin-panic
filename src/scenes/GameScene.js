@@ -209,7 +209,9 @@
 
             this.playerData = options;
             this.matchOver = false;
-            this.matchStartTime = this.time.now;
+            this.isLobbyActive = false;
+            this.matchActive = true;
+            this.matchStartTime = (this.time && typeof this.time.now === 'number') ? this.time.now : performance.now();
             this.playerKillStreak = 0;
             this.isMultiplayer = !!options.isMultiplayer;
             this.remoteEntities = new Map();
@@ -235,6 +237,11 @@
         }
 
         startLocalMatch(options) {
+            this.matchOver = false;
+            this.isLobbyActive = false;
+            this.matchActive = true;
+            this.matchStartTime = (this.time && typeof this.time.now === 'number') ? this.time.now : performance.now();
+
             // 1. Respawn & Refresh Local Seeds
             this.seedManager.initSeeds();
 
@@ -262,8 +269,12 @@
             this.setupCollisions();
 
             // 5. Camera follows Player
-            this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
-            this.cameras.main.setZoom(1.0);
+            if (this.cameras && this.cameras.main) {
+                this.cameras.main.stopFollow();
+                this.cameras.main.resetFX();
+                this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
+                this.cameras.main.setZoom(1.0);
+            }
 
             // 6. Initialize Systems
             if (this.stormSystem) this.stormSystem.destroy();
@@ -284,6 +295,7 @@
 
             // Notify UI
             if (window.PumpkinPanic.ui) {
+                window.PumpkinPanic.ui.setRoomCodeBadge(null);
                 window.PumpkinPanic.ui.onMatchStarted(this);
             }
 
@@ -303,10 +315,10 @@
             this.stormSystem = new window.PumpkinPanic.StormSystem(this);
 
             if (this.leaderboardSystem) {
-                this.leaderboardSystem.init(8);
+                this.leaderboardSystem.init(16);
             } else {
                 this.leaderboardSystem = new window.PumpkinPanic.LeaderboardSystem(this);
-                this.leaderboardSystem.init(8);
+                this.leaderboardSystem.init(16);
             }
 
             // 2. Create Colyseus Network Adapter
@@ -450,7 +462,8 @@
                             }
                             this.player.health = p.health;
                             this.player.maxHealth = p.maxHealth;
-                            this.player.level = p.level;
+                            this.player.xp = p.xp;
+                            this.player.level = Math.max(this.player.level, p.level);
                             this.player.kills = p.kills;
                             this.player.score = p.score;
                             this.player.updateHealthBar();
@@ -476,6 +489,7 @@
                             remote.health = p.health;
                             remote.maxHealth = p.maxHealth;
                             remote.level = p.level;
+                            remote.xp = p.xp;
                             remote.kills = p.kills;
                             remote.score = p.score;
                             remote.activeWeapon = p.activeWeapon;
@@ -628,7 +642,13 @@
             // Remove previous colliders if any were registered
             if (this.activeColliders && this.activeColliders.length > 0) {
                 this.activeColliders.forEach(c => {
-                    if (c) this.physics.world.removeCollider(c);
+                    if (c) {
+                        if (typeof c.destroy === 'function') {
+                            c.destroy();
+                        } else if (this.physics && this.physics.world && typeof this.physics.world.removeCollider === 'function') {
+                            this.physics.world.removeCollider(c);
+                        }
+                    }
                 });
             }
             this.activeColliders = [];
@@ -667,6 +687,11 @@
                 entity.takeDamage(bullet.damage, bullet.owner);
                 this.emitterManager.emitSpark(bullet.x, bullet.y);
                 bullet.deactivate();
+
+                // Transmit hit to Colyseus authoritative multiplayer server if online
+                if (this.isMultiplayer && this.networkAdapter && this.networkAdapter.connected && bullet.owner === this.player) {
+                    this.networkAdapter.sendHitEntity(entity.id, bullet.damage);
+                }
             }));
 
             // 5. Entities collect Seeds
@@ -901,6 +926,7 @@
             }
 
             if (this.matchOver) return;
+            if (this.isPausedByUser && !this.isMultiplayer) return;
 
             // Update Player
             if (this.player && !this.player.isDead) {
@@ -967,6 +993,17 @@
         }
 
         cleanupMatch() {
+            // 1. Cancel all pending scene timers and tweens so no dead callbacks run
+            if (this.time) this.time.removeAllEvents();
+            if (this.tweens) this.tweens.killAll();
+
+            // 2. Reset camera state
+            if (this.cameras && this.cameras.main) {
+                this.cameras.main.stopFollow();
+                this.cameras.main.resetFX();
+                this.cameras.main.setZoom(1.0);
+            }
+
             if (this.bulletPool) this.bulletPool.clear();
             if (this.seedManager) this.seedManager.clear();
             if (this.stormSystem) this.stormSystem.destroy();
@@ -1007,14 +1044,42 @@
             // Remove and clear all active physics colliders to prevent memory leaks across matches
             if (this.activeColliders && this.activeColliders.length > 0) {
                 this.activeColliders.forEach(c => {
-                    if (c) this.physics.world.removeCollider(c);
+                    if (c) {
+                        if (typeof c.destroy === 'function') {
+                            c.destroy();
+                        } else if (this.physics && this.physics.world && typeof this.physics.world.removeCollider === 'function') {
+                            this.physics.world.removeCollider(c);
+                        }
+                    }
                 });
                 this.activeColliders = [];
             }
         }
 
         restartMatch() {
-            this.startMatch(this.playerData);
+            const data = this.playerData || {
+                name: (window.PumpkinPanic.ui && window.PumpkinPanic.ui.playerName) || 'SpookyPumpkin',
+                skin: (window.PumpkinPanic.ui && window.PumpkinPanic.ui.selectedSkin) || 'classic',
+                gun: (window.PumpkinPanic.ui && window.PumpkinPanic.ui.selectedGun) || 'SEED_PISTOL',
+                isMultiplayer: false,
+                mode: 'local'
+            };
+            this.startMatch(data);
+        }
+
+        pauseGame() {
+            if (!this.matchActive || this.matchOver) return;
+            this.isPausedByUser = true;
+            if (!this.isMultiplayer && this.physics && this.physics.world) {
+                this.physics.pause();
+            }
+        }
+
+        resumeGame() {
+            this.isPausedByUser = false;
+            if (!this.isMultiplayer && this.physics && this.physics.world) {
+                this.physics.resume();
+            }
         }
 
         returnToMenu() {
@@ -1023,13 +1088,17 @@
             }
             this.matchActive = false;
             this.matchOver = false;
+            this.isLobbyActive = false;
             this.cleanupMatch();
 
-            this.cameras.main.stopFollow();
-            this.cameras.main.centerOn(Config.WORLD.WIDTH / 2, Config.WORLD.HEIGHT / 2);
-            this.cameras.main.setZoom(1.0);
+            if (this.cameras && this.cameras.main) {
+                this.cameras.main.stopFollow();
+                this.cameras.main.centerOn(Config.WORLD.WIDTH / 2, Config.WORLD.HEIGHT / 2);
+                this.cameras.main.setZoom(1.0);
+            }
 
             if (window.PumpkinPanic.ui) {
+                window.PumpkinPanic.ui.setRoomCodeBadge(null);
                 window.PumpkinPanic.ui.showStartMenu();
             }
         }

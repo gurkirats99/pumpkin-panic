@@ -36,9 +36,9 @@
             // Reticle pointer tint for bot
             this.aimPointer.fillColor = 0xd448ff;
 
-            // Weapon System for Bot - assign a random gun from Config.GUNS for vibrant battlefield diversity
-            const gunKeys = Object.keys(Config.GUNS || {});
-            const randomGunKey = options.gun || (gunKeys.length > 0 ? gunKeys[Math.floor(Math.random() * gunKeys.length)] : 'SEED_PISTOL');
+            // Weapon System for Bot - assign balanced starter guns so combat is fair and strategic
+            const starterGuns = ['SEED_PISTOL', 'DOUBLE_TAP', 'PUMPKIN_SMG', 'TRIPLE_FAN', 'HEX_BURST'];
+            const randomGunKey = options.gun || starterGuns[Math.floor(Math.random() * starterGuns.length)];
             this.baseGunId = randomGunKey;
             this.baseGun = (Config.GUNS && Config.GUNS[randomGunKey]) ? Config.GUNS[randomGunKey] : { id: 'SEED_PISTOL', type: 'SINGLE', damageMultiplier: 1.0, cooldownMultiplier: 1.0 };
 
